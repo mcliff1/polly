@@ -29,9 +29,10 @@ def handle_get(event):
 
     return {
         "body": json.dumps(items["Items"]),
-        "statusCode" : 400,
+        "statusCode" : 200,
         "headers": {
-            "Content-Type" : "application/json"
+            "Content-Type" : "application/json",
+            "Access-Control-Allow-Origin" : "*"
         }
     }
 
@@ -71,8 +72,10 @@ def handle_post(event):
         "body": '{"recordId" : "' + recordId + '"}',
         "statusCode" : 200,
         "headers": {
-            "Content-Type" : "application/json"
-    }}
+            "Content-Type" : "application/json",
+            "Access-Control-Allow-Origin" : "*"
+        }
+    }
 
 
 def apihandler(event, context):
@@ -94,5 +97,6 @@ def apihandler(event, context):
         "statusCode" : 400,
         "headers": {
             "Content-Type" : "application/json",
+            "Access-Control-Allow-Origin" : "*"
         },
     }
