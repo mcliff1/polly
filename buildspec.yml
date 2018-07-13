@@ -7,7 +7,7 @@ phases:
 
   install:
     commands:
-      - cd polly && npm install
+      - npm install
   build:
     commands:
       - npm run build
@@ -18,4 +18,4 @@ phases:
 artifacts:
   files:
     - "**/*"
-  base-directory: polly/build
+  base-directory: build

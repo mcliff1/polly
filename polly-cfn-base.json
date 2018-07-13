@@ -40,7 +40,7 @@
     "GitHubLocation" : {
       "Description" : "Clone URL from GitHub for Code Build",
       "Type" : "String",
-      "Default" : "https://github.com/mcliff1/myslsapp.git"
+      "Default" : "https://github.com/mcliff1/polly.git"
     }
   },
   "Resources": {
@@ -290,7 +290,6 @@
         "ServiceRole" : { "Ref" : "CodeBuildRole" },
         "Source" : {
           "Type" : "GITHUB",
-          "BuildSpec" : "polly/buildspec.yml",
           "Location" : { "Ref" : "GitHubLocation"},
           "GitCloneDepth" : 1
         },
