@@ -1,0 +1,21 @@
+# uses aws/codebuild/nodejs:8.11.0
+#
+version: 0.2
+
+
+phases:
+
+  install:
+    commands:
+      - cd api && npm install -g serverless
+  build:
+    commands:
+  post_build:
+    commands:
+      - serverless deploy --stage dev --region $AWS_REGION
+      - serverless info --region $AWS_REGION
+
+artifacts:
+  files:
+    - api/serverless.yml
+  base-directory: build
