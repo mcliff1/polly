@@ -7,6 +7,8 @@ from boto3.dynamodb.conditions import Key, Attr
 
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.DEBUG)
+logging.getLogger('boto3').setLevel(logging.WARN)
+logging.getLogger('botocore').setLevel(logging.WARN)
 
 """
 expects to have  string object 'postId' passed in as data
