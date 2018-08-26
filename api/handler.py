@@ -14,6 +14,8 @@ expects to have  string object 'postId' passed in as data
 returns JSON object from DB for data of id or all of database
 """
 def handle_get(event):
+    method = 'handle_get():'
+    LOGGER.debug('%sbegin', method)
 
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(os.environ['DB_TABLE_NAME'])
@@ -44,6 +46,8 @@ event should have parameters voice and text that
    represent the string objects to pass into polly
 """
 def handle_post(event):
+    method = 'handle_post():'
+    LOGGER.debug('%sbegin', method)
     data = json.loads(event['body'])
     recordId = str(uuid.uuid4())
     voice = data["voice"]
@@ -76,6 +80,8 @@ def handle_post(event):
             "Access-Control-Allow-Origin" : "*"
         }
     }
+
+
 
 
 def apihandler(event, context):
