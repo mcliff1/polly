@@ -86,7 +86,7 @@
         },
         "WebsiteConfiguration" : {
           "IndexDocument" : "index.html",
-          "ErrorDocument" : "indexhtml"
+          "ErrorDocument" : "index.html"
         },
         "Tags" : [
           { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-WebBucket"]]}},
