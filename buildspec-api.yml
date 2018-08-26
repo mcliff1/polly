@@ -1,18 +1,18 @@
 # uses aws/codebuild/nodejs:8.11.0
+# AWS_REGION is auto populated from CodeBuild
 #
 version: 0.2
-
 
 phases:
 
   install:
     commands:
-      - cd api && npm install -g serverless
+      - npm install -g serverless
   build:
     commands:
   post_build:
     commands:
-      - echo $AWS_REGION
+      - cd api
       - serverless deploy --stage dev --region $AWS_REGION
       - serverless info --region $AWS_REGION
 

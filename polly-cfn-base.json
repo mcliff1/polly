@@ -157,6 +157,18 @@
                   ],
                   "Resource" : "*",
                   "Effect" : "Allow"
+                },
+                {
+                  "Sid" : "serverless",
+                  "Action" : [
+                    "ssm:*",
+                    "cloudformation:*"
+                    "apigateway:*",
+                    "iam:GetRole",
+                    "lambda:*"
+                  ],
+                  "Resource" : "*",
+                  "Effect" : "Allow"
                 }
               ]
             }
