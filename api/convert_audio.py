@@ -4,14 +4,22 @@
 
 import boto3
 import os
+import loggingB
 from contextlib import closing
 from boto3.dynamodb.conditions import Key, Attr
 
+LOGGER= logging.getLogger()
+LOGGER.setLevel(logging.DEBUG)
+logging.getLogger('boto3').setLevel(logging.WARN)
+logging.getLogger('botocore').setLevel(logging.WARN)
+
+
 def lambda_handler(event, context):
+    method = 'lambda_handler():'
+    LOGGER.debug('%sbegin:%s', method, str(event))
+    postId = event['Records'][0]['Sns']["Message']
 
-    postId = event["Records"][0]["Sns"]["Message"]
-
-    print("Text to Speech function. Post ID in DynamoDB: " + postId)
+    LOGGER.debug('%sText to Speech function. Post ID in DynamoDB: %s', method, postId)
 
     #Retrieving information about the post from DynamoDB table
     dynamodb = boto3.resource('dynamodb')
@@ -21,8 +29,8 @@ def lambda_handler(event, context):
     )
 
 
-    text = postItem["Items"][0]["text"]
-    voice = postItem["Items"][0]["voice"]
+    text = postItem['Items'][0]['text']
+    voice = postItem['Items'][0]['voice']
 
     rest = text
 
@@ -54,41 +62,41 @@ def lambda_handler(event, context):
         #Save the audio stream returned by Amazon Polly on Lambda's temp
         # directory. If there are multiple text blocks, the audio stream
         # will be combined into a single file.
-        if "AudioStream" in response:
-            with closing(response["AudioStream"]) as stream:
-                output = os.path.join("/tmp/", postId)
-                with open(output, "ab") as file:
+        if 'AudioStream' in response:
+            with closing(response['AudioStream']) as stream:
+                output = os.path.join('/tmp/', postId)
+                with open(output, 'ab') as file:
                     file.write(stream.read())
 
 
-
+    LOGGER.debug('%sconversion complete now uploading file to S3: postId:%s', method, postId)
     s3 = boto3.client('s3')
     s3.upload_file('/tmp/' + postId,
       os.environ['BUCKET_NAME'],
       postId + ".mp3")
     s3.put_object_acl(ACL='public-read',
       Bucket=os.environ['BUCKET_NAME'],
-      Key= postId + ".mp3")
+      Key= postId + '.mp3')
 
     location = s3.get_bucket_location(Bucket=os.environ['BUCKET_NAME'])
     region = location['LocationConstraint']
 
     if region is None:
-        url_begining = "https://s3.amazonaws.com/"
+        url_begining = 'https://s3.amazonaws.com/'
     else:
-        url_begining = "https://s3-" + str(region) + ".amazonaws.com/" \
+        url_begining = 'https://s3-' + str(region) + '.amazonaws.com/' \
 
     url = url_begining \
             + str(os.environ['BUCKET_NAME']) \
             + "/" \
             + str(postId) \
-            + ".mp3"
-
+            + '.mp3'
     #Updating the item in DynamoDB
+    LOGGER.debug('%supdateing record in dynamodb:url:%s', method, url)
     response = table.update_item(
         Key={'id':postId},
           UpdateExpression=
-            "SET #statusAtt = :statusValue, #urlAtt = :urlValue",
+            'SET #statusAtt = :statusValue, #urlAtt = :urlValue',
           ExpressionAttributeValues=
             {':statusValue': 'UPDATED', ':urlValue': url},
         ExpressionAttributeNames=
