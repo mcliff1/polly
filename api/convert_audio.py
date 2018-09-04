@@ -1,10 +1,13 @@
-# env - Bucket Name (pollyaudio)
+# -*- coding: utf-8 -*-
+""" env - Bucket Name (pollyaudio)
+
 # DBTAble name
 # SNS Trigger - (ARN - NewPosts)
+"""
 
-import boto3
 import os
-import loggingB
+import logging
+import boto3
 from contextlib import closing
 from boto3.dynamodb.conditions import Key, Attr
 
@@ -17,7 +20,7 @@ logging.getLogger('botocore').setLevel(logging.WARN)
 def lambda_handler(event, context):
     method = 'lambda_handler():'
     LOGGER.debug('%sbegin:%s', method, str(event))
-    postId = event['Records'][0]['Sns']["Message']
+    postId = event['Records'][0]['Sns']['Message']
 
     LOGGER.debug('%sText to Speech function. Post ID in DynamoDB: %s', method, postId)
 
