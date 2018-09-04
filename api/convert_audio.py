@@ -7,59 +7,62 @@
 
 import os
 import logging
-import boto3
 from contextlib import closing
+import boto3
 from boto3.dynamodb.conditions import Key, Attr
 
-LOGGER= logging.getLogger()
+LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.DEBUG)
 logging.getLogger('boto3').setLevel(logging.WARN)
 logging.getLogger('botocore').setLevel(logging.WARN)
 
 
 def lambda_handler(event, context):
+    """
+    Main entry point
+    """
     method = 'lambda_handler():'
     LOGGER.debug('%sbegin:%s', method, str(event))
-    postId = event['Records'][0]['Sns']['Message']
+    post_id = event['Records'][0]['Sns']['Message']
 
-    LOGGER.debug('%sText to Speech function. Post ID in DynamoDB: %s', method, postId)
+    LOGGER.debug('%sText to Speech function. Post ID in DynamoDB: %s', method, post_id)
 
     #Retrieving information about the post from DynamoDB table
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(os.environ['DB_TABLE_NAME'])
-    postItem = table.query(
-        KeyConditionExpression=Key('id').eq(postId)
+    post_item = table.query(
+        KeyConditionExpression=Key('id').eq(post_id)
     )
 
 
-    text = postItem['Items'][0]['text']
-    voice = postItem['Items'][0]['voice']
+    text = post_item['Items'][0]['text']
+    voice = post_item['Items'][0]['voice']
 
     rest = text
 
     #Because single invocation of the polly synthesize_speech api can
     # transform text with about 1,500 characters, we are dividing the
     # post into blocks of approximately 1,000 characters.
-    textBlocks = []
-    while (len(rest) > 1100):
+    text_blocks = []
+    while len(rest) > 1100:
         begin = 0
         end = rest.find(".", 1000)
 
-        if (end == -1):
+        if end == -1:
             end = rest.find(" ", 1000)
 
-        textBlock = rest[begin:end]
+        text_block = rest[begin:end]
         rest = rest[end:]
-        textBlocks.append(textBlock)
-    textBlocks.append(rest)
+        text_blocks.append(text_block)
+    text_blocks.append(rest)
 
     #For each block, invoke Polly API, which will transform text into audio
     polly = boto3.client('polly')
-    for textBlock in textBlocks:
+    for text_block in text_blocks:
         response = polly.synthesize_speech(
             OutputFormat='mp3',
-            Text = textBlock,
-            VoiceId = voice
+            Text=text_block,
+            VoiceId=voice
         )
 
         #Save the audio stream returned by Amazon Polly on Lambda's temp
@@ -67,21 +70,19 @@ def lambda_handler(event, context):
         # will be combined into a single file.
         if 'AudioStream' in response:
             with closing(response['AudioStream']) as stream:
-                output = os.path.join('/tmp/', postId)
+                output = os.path.join('/tmp/', post_id)
                 with open(output, 'ab') as file:
                     file.write(stream.read())
 
 
-    LOGGER.debug('%sconversion complete now uploading file to S3: postId:%s', method, postId)
-    s3 = boto3.client('s3')
-    s3.upload_file('/tmp/' + postId,
-      os.environ['BUCKET_NAME'],
-      postId + ".mp3")
-    s3.put_object_acl(ACL='public-read',
-      Bucket=os.environ['BUCKET_NAME'],
-      Key= postId + '.mp3')
+    LOGGER.debug('%sconversion complete now uploading file to S3: postId:%s', method, post_id)
+    s3_client = boto3.client('s3')
+    s3_client.upload_file('/tmp/' + post_id, os.environ['BUCKET_NAME'], post_id + ".mp3")
+    s3_client.put_object_acl(ACL='public-read',
+                             Bucket=os.environ['BUCKET_NAME'],
+                             Key=post_id + '.mp3')
 
-    location = s3.get_bucket_location(Bucket=os.environ['BUCKET_NAME'])
+    location = s3_client.get_bucket_location(Bucket=os.environ['BUCKET_NAME'])
     region = location['LocationConstraint']
 
     if region is None:
@@ -92,18 +93,15 @@ def lambda_handler(event, context):
     url = url_begining \
             + str(os.environ['BUCKET_NAME']) \
             + "/" \
-            + str(postId) \
+            + str(post_id) \
             + '.mp3'
     #Updating the item in DynamoDB
     LOGGER.debug('%supdateing record in dynamodb:url:%s', method, url)
     response = table.update_item(
-        Key={'id':postId},
-          UpdateExpression=
-            'SET #statusAtt = :statusValue, #urlAtt = :urlValue',
-          ExpressionAttributeValues=
-            {':statusValue': 'UPDATED', ':urlValue': url},
-        ExpressionAttributeNames=
-          {'#statusAtt': 'status', '#urlAtt': 'url'},
+        Key={'id':post_id},
+        UpdateExpression='SET #statusAtt = :statusValue, #urlAtt = :urlValue',
+        ExpressionAttributeValues={':statusValue': 'UPDATED', ':urlValue': url},
+        ExpressionAttributeNames={'#statusAtt': 'status', '#urlAtt': 'url'},
     )
 
     return()
