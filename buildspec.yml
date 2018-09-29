@@ -1,5 +1,8 @@
 # uses aws/codebuild/nodejs:8.11.0
 #
+# variables provided by CodeBuild configuration (setup by CloudFormation)
+# WEB_BUCKET - target S3 bucket that public content deployed too
+#
 version: 0.2
 
 
@@ -7,6 +10,7 @@ phases:
 
   install:
     commands:
+      # loads all the project required node libs
       - npm install
   build:
     commands:
