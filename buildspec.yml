@@ -17,8 +17,9 @@ phases:
       - npm run build
   post_build:
     commands:
+      - echo $STACK_NAME
       - (cd api && serverless --stack $STACK_NAME --stage $STACK_NAME --region $AWS_REGION --verbose deploy)
-      - (cd api && serverless --region $AWS_REGION info)
+      - (cd api && serverless --stack $STACK_NAME --stage $STACK_NAME --region $AWS_REGION info)
       - aws s3 sync ./build s3://$WEB_BUCKET/ --delete --acl public-read
 
 artifacts:
