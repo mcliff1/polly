@@ -2,7 +2,7 @@
 #
 # variables provided by CodeBuild configuration (setup by CloudFormation)
 # WEB_BUCKET - target S3 bucket that public content deployed too
-#
+# STACK_NAME name of the cloud stack to use for resources
 version: 0.2
 
 
@@ -17,6 +17,8 @@ phases:
       - npm run build
   post_build:
     commands:
+      - (cd api && serverless --stack $STACK_NAME --stage $STACK_NAME --region $AWS_REGION --verbose deploy)
+      - (cd api && serverless --region $AWS_REGION info)
       - aws s3 sync ./build s3://$WEB_BUCKET/ --delete --acl public-read
 
 artifacts:

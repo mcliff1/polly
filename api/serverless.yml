@@ -1,20 +1,26 @@
 # For full config options, check the docs:
 #    docs.serverless.com
-service: pollyapi
+#
+# opt params
+#  - stack - pulls AWS(SSM) from cloud formation setup
+#  - stage - gets appended to service name 'polly-api'
+#  - region - AWS region to use
+#
+service: polly-api
 
 
 # used for readability
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
-  basestack: ${opt:basestack, 'pollybase'}
+  stack: ${opt:stack, 'pollybase'}
 
-  pollydb: ${ssm:/${self:custom.basestack}/pollyDB}
-  audiobucket: ${ssm:/${self:custom.basestack}/audioBucketName}
-  newpoststopic: ${ssm:/${self:custom.basestack}/newPostsTopic}
-  domainname: ${ssm:/${self:custom.basestack}/domainName}
-  hostname: ${ssm:/${self:custom.basestack}/apiHostName}
-  acmarn: ${ssm:/${self:custom.basestack}/apiAcmArn}
+  pollydb: ${ssm:/${self:custom.stack}/pollyDB}
+  audiobucket: ${ssm:/${self:custom.stack}/audioBucketName}
+  newpoststopic: ${ssm:/${self:custom.stack}/newPostsTopic}
+  domainname: ${ssm:/${self:custom.stack}/domainName}
+  hostname: ${ssm:/${self:custom.stack}/apiHostName}
+  acmarn: ${ssm:/${self:custom.stack}/apiAcmArn}
 
 
 provider:

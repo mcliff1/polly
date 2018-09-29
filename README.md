@@ -28,6 +28,12 @@ It is encoded to call *arn:aws:codepipeline:us-west-2:220065781146:custom_git_ho
 - Build: input artifact is *MyApp* with action to run **CodeBuild** with projectname *pollybase*.  This has an output of *MyAppBuild*
 
 
+To run serverless command execute
+
+```
+sls --basestack <stackname> --stage <deploymentname> --region <AWS::Region> deploy
+```
+
 ## TODO
 
 - Review and reduce permission sets on CodeBuild role to required assets
