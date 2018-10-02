@@ -255,7 +255,7 @@
     "CodePipeline" : {
       "Type" : "AWS::CodePipeline::Pipeline",
       "Properties" : {
-        "RoleArn" : {"Ref" : "CodePipelineRole"},
+        "RoleArn" : {"Fn::GetAtt" : ["CodePipelineRole", "Arn"]},
         "ArtifactStore" : {
           "Type" : "S3",
           "Location" : {"Ref" : "ArtifactStoreBucket"}
