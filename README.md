@@ -2,16 +2,33 @@
 
 Sample project to show case serverless technology and speech translations.
 
-Includes
-*polly-cfn-base.json* which creates 2 S3 buckets, domain names and DynamoDB for meta data,  additionally an API and lambda function get created with a *serverless.yml* file.
-
-The end result is controlled by two stacks in *AWS CloudFormation*.
+This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 there is also a REACT UI that gets deployed to S3 to present the tool
 
 
 ## Install Notes
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
+
+Step One - install the
+*polly-cfn-base.json* template
+which creates 2 S3 buckets, domain names and DynamoDB for meta data,  additionally an API and lambda function get created with a *serverless.yml* file.
+
+creates
+
+- S3 bucket for audio
+- s3 bucket for build
+- S3 bucket for static web content
+- CDN
+- Code build project and role (build API layer)
+- DynamoDB table
+- SNS topics (general and newposts)
+- DNS (Route53) entry for Web
+
+
+
+
+The end result is controlled by two stacks in *AWS CloudFormation*.
+
 
 **AWS CodePipeline**
 
@@ -20,7 +37,7 @@ The API folder was created with the *serverless* tool.
 
 ## Build Notes
 
-WebHook to this added to this git, so when a code commit occurs it sends the event to **AWS CodePipeline**
+In order to have the Code Pipeline get trigger automatically you need to add a WebHook to this added to this git, so when a code commit occurs it sends the event to **AWS CodePipeline**
 
 It is encoded to call *arn:aws:codepipeline:us-west-2:220065781146:custom_git_hook_polly* (this is my testing AWS account), this has 2 stages
 
