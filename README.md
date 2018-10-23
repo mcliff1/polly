@@ -30,6 +30,8 @@ creates
 The end result is controlled by two stacks in *AWS CloudFormation*.
 
 
+10/22/18 - added a webhook in the polly github connecting to develop pipeline in mcliff1 AWS account
+
 **AWS CodePipeline**
 
 The API folder was created with the *serverless* tool.
