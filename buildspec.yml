@@ -11,6 +11,7 @@ phases:
   install:
     commands:
       # loads all the project required node libs
+      - npm install -g serverless
       - npm install
   build:
     commands:

@@ -50,7 +50,7 @@
     "Environment" : {
       "Description" : "Used to load set of properties and common resource",
       "Type" : "String",
-      "AllowedValues" : [ "develop", "master" ]
+      "AllowedValues" : [ "develop", "prod" ]
     }
 
   },
@@ -224,7 +224,8 @@
               "Statement" : [
                 {
                   "Action" : [
-                    "codepipeline:*"
+                    "codepipeline:*",
+                    "codebuild:*"
                   ],
                   "Resource" : "*",
                   "Effect" : "Allow"
@@ -420,10 +421,9 @@
       "Type" : "AWS::CodeBuild::Project",
       "DependsOn" : "CodeBuildRole",
       "Properties" : {
-        "Name" : { "Ref" : "AWS::StackName" },
         "Description" : "Polly Application Code Build and Deployment",
         "Artifacts" : {
-          "Type" : "no_artifacts"
+          "Type" : "CODEPIPELINE"
         },
         "Environment" : {
           "Type" : "LINUX_CONTAINER",
@@ -438,9 +438,7 @@
         },
         "ServiceRole" : { "Ref" : "CodeBuildRole" },
         "Source" : {
-          "Type" : "GITHUB",
-          "Location" : { "Ref" : "GitHubLocation"},
-          "GitCloneDepth" : 1
+          "Type" : "CODEPIPELINE"
         },
         "Tags" : [
           { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-CodeBuild"]]}},
