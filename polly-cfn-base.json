@@ -10,7 +10,7 @@
     "DomainName" : {
       "Description" : "Enter Domain Name to Use (must be HostedZone)",
       "Type" : "String",
-      "Default" : "mydomain.com"
+      "Default" : "mattcliff.net"
     },
     "WebHostName" : {
       "Description" : "Enter Host Name for the Website",
@@ -22,20 +22,15 @@
       "Type" : "String",
       "Default" : "polly-api"
     },
-    "TopicName" : {
-      "Description" : "Enter SNS Topic Name",
-      "Type" : "String",
-      "Default" : "polly-sns"
-    },
     "ApiACMArn" : {
       "Description" : "ARN for the API ACM (must be created in us-east-1)",
       "Type" : "String",
-      "Default" : ""
+      "Default" : "arn:aws:acm:us-east-1:220065781146:certificate/99c23c6e-a2cf-4e83-ba1e-846f373e0d79"
     },
     "WebACMArn" : {
       "Description" : "ARN for the Web ACM (must be created in us-east-1)",
       "Type" : "String",
-      "Default" : ""
+      "Default" : "arn:aws:acm:us-east-1:220065781146:certificate/99c23c6e-a2cf-4e83-ba1e-846f373e0d79"
     },
     "GitHubLocation" : {
       "Description" : "Clone URL from GitHub for Code Build",
@@ -58,14 +53,12 @@
     "SNSTopic" : {
       "Type" : "AWS::SNS::Topic",
       "Properties" : {
-        "TopicName": {"Fn::Sub": "${AWS::StackName}-GeneralTopic" },
         "DisplayName": {"Fn::Sub" : "General Announcments For ${AWS::StackName} network"}
       }
     },
     "SNSNewPostsTopic" : {
       "Type" : "AWS::SNS::Topic",
       "Properties" : {
-        "TopicName": {"Fn::Sub": "${AWS::StackName}-NewPostsTopic" },
         "DisplayName": {"Fn::Sub" : "New Posts (Lambda to Lambda connection) ${AWS::StackName}"}
       }
     },
@@ -180,8 +173,19 @@
                 },
                 {
                   "Action" : [
+                    "iam:DeleteRolePolicy",
+                    "iam:DeleteRole",
+                    "iam:PutRolePolicy",
+                    "iam:PassRole"
+                  ],
+                  "Resource" : "*",
+                  "Effect" : "Allow"
+                },
+                {
+                  "Action" : [
                     "ssm:*",
                     "cloudformation:*",
+                    "cloudfront:*",
                     "apigateway:*",
                     "iam:CreateRole",
                     "iam:GetRole",
@@ -348,7 +352,7 @@
             }
           ],
           "DefaultCacheBehavior" : {
-            "ViewerProtocolPolicy" : "allow-all",
+            "ViewerProtocolPolicy" : "redirect-to-https",
             "TargetOriginId" : "S3Origin",
             "AllowedMethods" : [ "GET", "HEAD" ],
             "Compress" : "true",
@@ -431,8 +435,16 @@
           "Image" : "aws/codebuild/nodejs:8.11.0",
           "EnvironmentVariables" : [
             {
+              "Name" : "BRANCH",
+              "Value" : { "Ref" : "Environment" }
+            },
+            {
               "Name" : "WEB_BUCKET",
               "Value" : { "Ref" : "WebBucket" }
+            },
+            {
+              "Name" : "STACK_NAME",
+              "Value" : { "Ref" : "AWS::StackName" }
             }
           ]
         },
