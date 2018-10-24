@@ -11,6 +11,7 @@ phases:
   install:
     commands:
       # loads all the project required node libs
+      - apt-get update && apt install -y jq
       - npm install -g serverless
       - npm install
       - echo $STACK_NAME
@@ -20,6 +21,7 @@ phases:
       - DOMAIN=$(aws describe-stacks --stack-name $STACK_NAME | jq '.Stacks[].Outputs | select (.OutputKey == "DomainName")')
   build:
     commands:
+      - echo "${API_HOST}.${DOMAIN}"
       - API_ENDPOINT=${API_HOST}.${DOMAIN} npm run build
   post_build:
     commands:
