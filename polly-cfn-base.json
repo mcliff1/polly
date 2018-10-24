@@ -545,7 +545,7 @@
     },
     "DomainName" : {
       "Description" : "Domain Name to be used",
-      "Value" : {"Ref": "SNSTopic"},
+      "Value" : {"Ref": "DomainName"},
       "Export" : {"Name" : {"Fn::Sub": "${AWS::StackName}-DomainName"}}
     },
     "ApiHostName" : {
