@@ -87,12 +87,16 @@
           "CorsRules" : [
             {
               "AllowedMethods" : [ "GET" ],
-              "AllowedOrigins" : [ "*" ],
+              "AllowedOrigins" : [ {"Fn::Join" : [".", ["*", {"Ref": "DomainName"}]]} ],
+              "AllowedHeaders" : ["*"],
+              "MaxAge" : 3000,
               "Id" : "corsRuleGet"
             },
             {
               "AllowedMethods" : [ "PUT", "POST", "DELETE" ],
-              "AllowedOrigins" : [ "*" ],
+              "AllowedOrigins" : [ {"Fn::Join" : [".", ["*", {"Ref": "DomainName"}]]} ],
+              "AllowedHeaders" : ["*"],
+              "MaxAge" : 3000,
               "Id" : "corsRuleModify"
             }
           ]
@@ -364,7 +368,7 @@
           "DefaultCacheBehavior" : {
             "ViewerProtocolPolicy" : "redirect-to-https",
             "TargetOriginId" : "S3Origin",
-            "AllowedMethods" : [ "GET", "HEAD" ],
+            "AllowedMethods" : [ "GET", "HEAD", "PUT", "POST", "PATCH", "DELETE", "OPTIONS" ],
             "Compress" : "true",
             "DefaultTTL" : "30",
             "MinTTL" : "10",
