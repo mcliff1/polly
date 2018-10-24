@@ -17,8 +17,8 @@ phases:
       - echo $STACK_NAME
       - ( cd api && serverless deploy --stack $STACK_NAME --stage $STACK_NAME --region $AWS_REGION --verbose )
       - ( cd api && serverless info --stack $STACK_NAME --stage $STACK_NAME --region $AWS_REGION )
-      - API_HOST=$(aws describe-stacks --stack-name $STACK_NAME | jq '.Stacks[].Outputs | select (.OutputKey == "ApiHostName")')
-      - DOMAIN=$(aws describe-stacks --stack-name $STACK_NAME | jq '.Stacks[].Outputs | select (.OutputKey == "DomainName")')
+      - API_HOST=$(aws cloudformation describe-stacks --stack-name $STACK_NAME | jq '.Stacks[].Outputs | select (.OutputKey == "ApiHostName")')
+      - DOMAIN=$(aws cloudformation describe-stacks --stack-name $STACK_NAME | jq '.Stacks[].Outputs | select (.OutputKey == "DomainName")')
   build:
     commands:
       - echo "${API_HOST}.${DOMAIN}"
