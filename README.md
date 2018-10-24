@@ -41,8 +41,6 @@ The API folder was created with the *serverless* tool.
 
 In order to have the Code Pipeline get trigger automatically you need to add a WebHook to this added to this git, so when a code commit occurs it sends the event to **AWS CodePipeline**
 
-It is encoded to call *arn:aws:codepipeline:us-west-2:220065781146:custom_git_hook_polly* (this is my testing AWS account), this has 2 stages
-
 - Source: has no input artifacts and GitHub as the source, output artifact called *MyApp*, it does have configuration on the *master* branch.
 - Build: input artifact is *MyApp* with action to run **CodeBuild** with projectname *pollybase*.  This has an output of *MyAppBuild*
 

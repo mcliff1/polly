@@ -5,7 +5,7 @@
 
 
 // utility const for API
- export const API_ENDPOINT = 'https://polly-api.mattcliff.net/dev';
+ export const API_ENDPOINT = 'https://polly-dev-api.mattcliff.net/dev';
 
 
 

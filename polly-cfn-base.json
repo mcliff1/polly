@@ -173,10 +173,20 @@
                 },
                 {
                   "Action" : [
+                    "sns:*"
+                  ],
+                  "Resource" : {"Ref": "SNSNewPostsTopic"},
+                  "Effect" : "Allow"
+                },
+                {
+                  "Action" : [
                     "iam:DeleteRolePolicy",
                     "iam:DeleteRole",
                     "iam:PutRolePolicy",
-                    "iam:PassRole"
+                    "iam:PassRole",
+                    "route53:ListHostedZones",
+                    "route53:ChangeResourceRecordSets",
+                    "route53:GetChange"
                   ],
                   "Resource" : "*",
                   "Effect" : "Allow"
