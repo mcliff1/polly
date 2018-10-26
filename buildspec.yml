@@ -1,5 +1,5 @@
 # uses aws/codebuild/nodejs:8.11.0
-#
+#  mcliff/slsbuild:1.0.0  (has sls and jq installed) - not working with that version
 # variables provided by CodeBuild configuration (setup by CloudFormation)
 # WEB_BUCKET - target S3 bucket that public content deployed too
 # STACK_NAME name of the cloud stack to use for resources
@@ -17,7 +17,10 @@ phases:
       - echo $STACK_NAME
       - ( cd api && serverless deploy --stack $STACK_NAME --stage $STACK_NAME --region $AWS_REGION --verbose )
       - ( cd api && serverless info --stack $STACK_NAME --stage $STACK_NAME --region $AWS_REGION )
-      - API_HOST=$(aws cloudformation describe-stacks --stack-name $STACK_NAME | jq '.Stacks[].Outputs | select (.OutputKey == "ApiHostName")')
+      - STACK_DESC=$(aws cloudformation describe-stacks --stack-name $STACK_NAME)
+      - echo $STACK_DESC
+      #- API_HOST=$(aws cloudformation describe-stacks --stack-name $STACK_NAME | jq '.Stacks[].Outputs | select (.OutputKey == "ApiHostName")')
+      - echo $STACK_DESC | jq '.Stacks[].Outputs | select (.OutputKey == "ApiHostName")')
       - DOMAIN=$(aws cloudformation describe-stacks --stack-name $STACK_NAME | jq '.Stacks[].Outputs | select (.OutputKey == "DomainName")')
   build:
     commands:
