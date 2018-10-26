@@ -8,9 +8,11 @@ there is also a REACT UI that gets deployed to S3 to present the tool
 
 ## Architecture
 
-contains a REACT static layer server through an *AWS CloudFront* and a python backed *Lambda* function served through *API Gateway*. A *S3*, and *DynamoDB* are used to store session information and outputs.
+contains a REACT static layer server through an **AWS CloudFront** and a python backed **Lambda** function served through **API Gateway**. A **S3**, and **DynamoDB** are used to store session information and outputs.
 
 the *handler.py* code stores the request in dynamo with and generates unique request id.  The request is is posted to the SNS topic, which is set up as the trigger for the *convert_audio.py* function.
+
+The *src/actions/index.js* file has the configuration for the API endpoint url.
 
 ## Install Notes
 
