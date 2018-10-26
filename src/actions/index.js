@@ -5,9 +5,9 @@
 
 
 // utility const for API
-//export const API_ENDPOINT = 'https://polly-dev-api.mattcliff.net/pollydev';
-export const API_ENDPOINT = process.env.API_ENDPOINT + '/pollydev';
-
+export const API_ENDPOINT = 'https://polly-dev-api.mattcliff.net/pollydev';
+//export const API_ENDPOINT = process.env.API_ENDPOINT + '/pollydev';
+//console.log(API_ENDPOINT);
 
 
 export const updateText = (text) => ({
