@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Media as StrapMedia,
   Nav, NavItem, NavLink } from 'reactstrap';
 import { NavLink as RRNavLink } from 'react-router-dom';
-//import Media from 'react-media';
+import Media from 'react-media';
 
 
 class AppNav extends Component {
