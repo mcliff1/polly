@@ -6,6 +6,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 there is also a REACT UI that gets deployed to S3 to present the tool
 
+
 ## Architecture
 
 contains a REACT static layer server through an **AWS CloudFront** and a python backed **Lambda** function served through **API Gateway**. A **S3**, and **DynamoDB** are used to store session information and outputs.
@@ -13,6 +14,8 @@ contains a REACT static layer server through an **AWS CloudFront** and a python 
 the *handler.py* code stores the request in dynamo with and generates unique request id.  The request is is posted to the SNS topic, which is set up as the trigger for the *convert_audio.py* function.
 
 The *src/actions/index.js* file has the configuration for the API endpoint url.
+
+
 
 ## Install Notes
 
@@ -44,6 +47,8 @@ The end result is controlled by two stacks in *AWS CloudFormation*.
 The API folder was created with the *serverless* tool.
 `serverless create --template aws-python3 --path api` (**NOTE** I had to run this on a EC2 instance set up for Node)
 
+
+**TODO** need to figure out how to get the API property environment specific for REACT (with Angular we do this with environment.ts files) I may need ot put this in buildspec
 
 
 ## Build Notes

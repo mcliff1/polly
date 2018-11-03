@@ -11,8 +11,8 @@ phases:
   install:
     commands:
       # loads all the project required node libs
-      - apt-get update && apt install -y jq
-      - npm install -g serverless
+      # - apt-get update && apt install -y jq
+      # - npm install -g serverless
       - npm install
       - echo $STACK_NAME
       - ( cd api && serverless deploy --stack $STACK_NAME --stage $STACK_NAME --region $AWS_REGION --verbose )
