@@ -20,9 +20,9 @@ phases:
       - STACK_DESC=$(aws cloudformation describe-stacks --stack-name $STACK_NAME)
       - echo $STACK_DESC
       #- API_HOST=$(aws cloudformation describe-stacks --stack-name $STACK_NAME | jq '.Stacks[].Outputs | select (.OutputKey == "ApiHostName")')
-      - echo $STACK_DESC | jq '.Stacks[].Outputs
-      - echo $STACK_DESC | jq '.Stacks[].Outputs | select (.OutputKey = "ApiHostName")'
-      - API_HOST=$(echo $STACK_DESC | jq '.Stacks[].Outputs | select (.OutputKey = "ApiHostName")')
+      - echo $STACK_DESC | jq '.Stacks[].Outputs[]
+      - echo $STACK_DESC | jq '.Stacks[].Outputs[] | select (.OutputKey = "ApiHostName")'
+      - API_HOST=$(echo $STACK_DESC | jq '.Stacks[].Outputs[] | select (.OutputKey = "ApiHostName")')
       - DOMAIN=$(aws cloudformation describe-stacks --stack-name $STACK_NAME | jq '.Stacks[].Outputs | select (.OutputKey == "DomainName")')
   build:
     commands:
