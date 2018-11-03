@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route  } from 'react-router-dom';
 import './App.css';
-import TextToAudio from './TextToAudio';
-import AudioList from './AudioList';
-import AppNav from './AppNav';
+import Home from './Home';
 
 class App extends Component {
 
