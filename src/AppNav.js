@@ -25,6 +25,10 @@ class AppNav extends Component {
   render() {
     return (
       <div>
+      <header className="App-header">
+        <h1 className="App-title">Welcome to Polly</h1>
+      </header>
+
       <Media query="(max-width: 600px)">
         {matches =>
           matches ? ( /* small screen nav */

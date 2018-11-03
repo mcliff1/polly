@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route  } from 'react-router-dom';
 import './App.css';
 import TextToAudio from './TextToAudio';
 import AudioList from './AudioList';
@@ -8,22 +9,17 @@ class App extends Component {
 
   render() {
     return (
+
+      <Router>
       <div className="App">
         <AppNav />
-        <header className="App-header">
-          <h1 className="App-title">Welcome to Polly</h1>
-        </header>
-        <div><p>
-        This page will accept text, when submitted gets converted to MP3.
-        The conversion happens via a Lambda function triggered via API Gateway,
-        this results in the actual MP3 file being stored on a S3 bucket.
-        A 2nd API call is available to pull the meta data for the audio clips
-        </p></div>
-        <TextToAudio />
-        <p>To work the filter, use &quot;*&quot; to show all</p>
-        <AudioList />
-        <p>Last Published 10/23/2018</p>
+
+        <div>
+        <Route exact path="/" component={Home} />
+        <Route path="/history" component={Home} />
+        </div>
       </div>
+      </Router>
     );
   }
 }
