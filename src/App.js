@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import './App.css';
 import TextToAudio from './TextToAudio';
 import AudioList from './AudioList';
+import AppNav from './AppNav';
 
 class App extends Component {
 
   render() {
     return (
       <div className="App">
+        <AppNav />
         <header className="App-header">
           <h1 className="App-title">Welcome to Polly</h1>
         </header>

@@ -15,6 +15,9 @@ the *handler.py* code stores the request in dynamo with and generates unique req
 
 The *src/actions/index.js* file has the configuration for the API endpoint url.
 
+#### 11/3/2018
+
+split the List to a new page
 
 
 ## Install Notes
