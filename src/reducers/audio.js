@@ -11,7 +11,8 @@ const defaultState = {
   lastGenerated: null,
   searchFilter: '*',
   needsUpdate: false,
-  selectedLanguage: 'English'
+  selectedLanguage: 'English',
+  audioItem: ''
 }
 
 
@@ -54,7 +55,13 @@ const audio = (state = defaultState, action) => {
         ...state,
         audioList: action.payload,
         needsUpdate: false
-      }
+      };
+    case 'UPDATE_ITEM_FULFILLED':
+      return {
+        ...state,
+        audioItem: action.payload[0],
+        needsUpdate: false
+      };
     default:
       return state;
   }

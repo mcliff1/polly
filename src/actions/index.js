@@ -48,6 +48,13 @@ export const generateAudio = (voice, language, text) => ({
 });
 
 
+export const updateItem = (postId) => ({
+  type: 'UPDATE_ITEM',
+  payload: fetch(API_ENDPOINT + '?postId=' + postId, {
+      method: 'GET',
+      headers: { 'Content-Type' : 'application/json' }
+    }).then(res => res.json())
+});
 
 
 export const updateList = (filter) => ({
