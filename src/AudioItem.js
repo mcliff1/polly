@@ -15,7 +15,7 @@ const AudioItem = ({needsUpdate, handleUpdate, audioItem, audioItemId}) => {
 
   return(
     <div>
-      <p>Get this thing to show the most recently generated item
+      <p>Get this thing to show the most recently generated item</p>
       <AudioListViewDetail item={audioItem} />
     </div>
   );
