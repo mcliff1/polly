@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import TextToAudio from './TextToAudio';
 import AudioList from './AudioList';
-import AppNav from './AppNav';
 
-class App extends Component {
+class Home extends Component {
 
   render() {
     return (
@@ -24,4 +23,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default Home;
