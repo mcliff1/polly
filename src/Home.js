@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import TextToAudio from './TextToAudio';
-import AudioList from './AudioList';
+import AudioItem from './AudioItem';
 
 class Home extends Component {
 
@@ -16,7 +16,7 @@ class Home extends Component {
         </p></div>
         <TextToAudio />
         <p>To work the filter, use &quot;*&quot; to show all</p>
-        <AudioList />
+        <AudioItem />
         <p>Last Published 10/23/2018</p>
       </div>
     );
