@@ -59,7 +59,7 @@ const audio = (state = defaultState, action) => {
     case 'UPDATE_ITEM_FULFILLED':
       return {
         ...state,
-        audioItem: action.payload[0],
+        audioItem: action.payload,
         needsUpdate: false
       };
     default:
