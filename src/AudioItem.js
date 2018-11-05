@@ -7,6 +7,9 @@ import { updateItem } from './actions'
 const AudioItem = ({needsUpdate, handleUpdate, audioItem, audioItemId}) => {
   console.log('API ENDP POINT TO LOG IS:');
   console.log(process.env.API_ENDPOINT);
+  console.log('APP1  IS:');
+  console.log(process.env.APP1);
+
   if (needsUpdate) {
     // a little delay let's polly do the processing
     setTimeout(() => {

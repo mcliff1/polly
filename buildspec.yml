@@ -29,6 +29,10 @@ phases:
     commands:
       - export API_ENDPOINT=${API_HOST}.${DOMAIN}
       - echo $API_ENDPOINT
+      - touch .env
+      - echo "APP1=root" > .env
+      - touch src/.env
+      - echo "APP1=src" > src/.env
       - API_ENDPOINT=${API_ENDPOINT} npm run build
   post_build:
     commands:
