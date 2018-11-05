@@ -8,7 +8,7 @@ const AudioItem = ({needsUpdate, handleUpdate, audioItem, audioItemId}) => {
   console.log('process env:');
   console.log(process.env);
 
-  console.log('API ENDP POINT TO LOG IS:');
+  console.log('API END POINT TO LOG IS:');
   console.log(process.env.API_ENDPOINT);
   console.log('APP1  IS:');
   console.log(process.env.APP1);
