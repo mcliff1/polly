@@ -7,6 +7,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import App from './App';
 
+require('dotenv').config();
+console.log(process.env);
+
 ReactDOM.render(
   <Provider store={store}>
     <App />
