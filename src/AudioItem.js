@@ -5,6 +5,9 @@ import AudioListViewDetail from './AudioListViewDetail';
 import { updateItem } from './actions'
 
 const AudioItem = ({needsUpdate, handleUpdate, audioItem, audioItemId}) => {
+  console.log('process env:');
+  console.log(process.env);
+
   console.log('API ENDP POINT TO LOG IS:');
   console.log(process.env.API_ENDPOINT);
   console.log('APP1  IS:');
