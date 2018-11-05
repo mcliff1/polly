@@ -1,7 +1,7 @@
 {
   "name": "polly",
   "version": "0.2.0",
-  "homepage": "https://mcliff1.github.io/polly",
+  "homepage1": "https://mcliff1.github.io/polly",
   "private": true,
   "dependencies": {
     "ajv": "^6.5.5",
