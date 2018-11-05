@@ -4,6 +4,7 @@ import './App.css';
 import AppNav from './AppNav';
 import Home from './Home';
 import History from './History';
+require('dotenv').config()
 
 class App extends Component {
 
