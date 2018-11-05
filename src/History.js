@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import TextToAudio from './TextToAudio';
 import AudioList from './AudioList';
-import AppNav from './AppNav';
 
 class History extends Component {
 
