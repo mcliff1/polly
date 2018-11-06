@@ -7,6 +7,7 @@ import { updateItem } from './actions'
 const AudioItem = ({needsUpdate, handleUpdate, audioItem, audioItemId}) => {
   console.log('process env:');
   console.log(process.env);
+  console.log('process env:' + process.env);
 
   console.log('API END POINT TO LOG IS:');
   console.log(process.env.API_ENDPOINT);

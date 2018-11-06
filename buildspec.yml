@@ -27,13 +27,13 @@ phases:
       - DOMAIN=$(aws cloudformation describe-stacks --stack-name $STACK_NAME | jq '.Stacks[].Outputs[] | select (.OutputKey == "DomainName")' | jq -r '.OutputValue')
   build:
     commands:
-      - export API_ENDPOINT=${API_HOST}.${DOMAIN}
-      - echo $API_ENDPOINT
-      - touch .env
-      - echo "APP1=root" > .env
-      - touch src/.env
-      - echo "APP1=src" > src/.env
-      - API_ENDPOINT=${API_ENDPOINT} npm run build-dev
+      - export API_ENDPOINT1=${API_HOST}.${DOMAIN}
+      - echo $API_ENDPOINT1
+      - echo "APP1=root" > variables.env
+      - echo "APP1=src" > src/variables.env
+      - export APP1
+      - API_ENDPOINT=${API_ENDPOINT1} npm run build
+      #- API_ENDPOINT=${API_ENDPOINT} npm run build-dev
   post_build:
     commands:
       # - ( cd api && serverless deploy --stack $STACK_NAME --stage dev --region $AWS_REGION --verbose )
