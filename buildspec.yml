@@ -31,6 +31,8 @@ phases:
       - echo $API_ENDPOINT1
       - echo "APP1=root" > variables.env
       - echo "APP1=src" > src/variables.env
+      - echo "APP1=root" > .env
+      - echo "APP1=src" > src/.env
       - export APP1
       - API_ENDPOINT=${API_ENDPOINT1} npm run build
       #- API_ENDPOINT=${API_ENDPOINT} npm run build-dev
