@@ -8,6 +8,7 @@ import './index.css';
 import App from './App';
 
 require('dotenv').config();
+console.log('HELLO')
 console.log('process' + process.env);
 
 ReactDOM.render(
