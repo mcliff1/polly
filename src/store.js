@@ -8,5 +8,5 @@ import reducer from './reducers';
 const middleware = applyMiddleware(thunkMiddleware, promiseMiddleware(),logger);
 const store = createStore(reducer, {}, middleware);
 
-console.log(store.getState());
+console.log('initial state of store:' + store.getState());
 export default store;
