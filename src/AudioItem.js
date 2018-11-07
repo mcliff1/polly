@@ -15,6 +15,15 @@ const AudioItem = ({needsUpdate, handleUpdate, audioItem, audioItemId}) => {
   if (needsUpdate) {
     // a little delay let's polly do the processing
     setTimeout(() => {
+      console.log('process env:');
+      console.log(process.env);
+      console.log('process env:' + process.env);
+
+      console.log('API END POINT TO LOG IS:');
+      console.log(process.env.REACT_APP_API_ENDPOINT);
+      console.log('APP1  IS:');
+      console.log(process.env.REACT_APP_APP1);
+
       console.log('handleSearch called after timeout');
       handleUpdate(audioItemId); }, 500);
   }

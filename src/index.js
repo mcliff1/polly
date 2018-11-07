@@ -8,7 +8,7 @@ import './index.css';
 import App from './App';
 
 require('dotenv').config();
-console.log('process' + process.env.REACT_APP_API_ENDPOINT);
+console.log('HELLO process' + process.env.REACT_APP_API_ENDPOINT);
 
 ReactDOM.render(
   <Provider store={store}>
