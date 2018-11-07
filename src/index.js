@@ -8,7 +8,8 @@ import './index.css';
 import App from './App';
 
 require('dotenv').config();
-console.log('HELLO process' + process.env.REACT_APP_API_ENDPOINT);
+require('util')
+console.log('TODO is dotenv.config necessary:' + util.inspect(process.env, {showHidden: false, depth:null}));
 
 ReactDOM.render(
   <Provider store={store}>
