@@ -446,7 +446,7 @@
         "Environment" : {
           "Type" : "LINUX_CONTAINER",
           "ComputeType" : "BUILD_GENERAL1_SMALL",
-          "Image" : "aws/codebuild/nodejs:8.11.0",
+          "Image" : "mcliff/slsbuild:1.0.0",
           "EnvironmentVariables" : [
             {
               "Name" : "BRANCH",

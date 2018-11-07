@@ -5,9 +5,9 @@
 
 
 // utility const for API
-export const API_ENDPOINT = 'https://polly-dev-api.mattcliff.net/pollydev';
-//export const API_ENDPOINT = process.env.API_ENDPOINT;
-
+//export const API_ENDPOINT = 'https://polly-dev-api.mattcliff.net/pollydev';
+export const API_ENDPOINT = 'https://' + process.env.REACT_APP_API_ENDPOINT + '/pollydev';
+console.log('using endpoint:' +  API_ENDPOINT);
 
 
 export const updateText = (text) => ({
@@ -48,6 +48,13 @@ export const generateAudio = (voice, language, text) => ({
 });
 
 
+export const updateItem = (postId) => ({
+  type: 'UPDATE_ITEM',
+  payload: fetch(API_ENDPOINT + '?postId=' + postId, {
+      method: 'GET',
+      headers: { 'Content-Type' : 'application/json' }
+    }).then(res => res.json())
+});
 
 
 export const updateList = (filter) => ({

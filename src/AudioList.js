@@ -9,7 +9,9 @@ const AudioList = ({needsUpdate, searchFilter, audioList, handleSearch, handleFi
 
   if (needsUpdate) {
     // a little delay let's polly do the processing
-    setTimeout(() => { handleSearch(searchFilter); }, 500);
+    setTimeout(() => {
+      console.log('handleSearch called after timeout');
+      handleSearch(searchFilter); }, 500);
   }
 
   return(
