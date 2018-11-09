@@ -10,7 +10,7 @@
     "DomainName" : {
       "Description" : "Enter Domain Name to Use (must be HostedZone)",
       "Type" : "String",
-      "Default" : "mydomain.com"
+      "Default" : "mattcliff.net"
     },
     "WebHostName" : {
       "Description" : "Enter Host Name for the Website",
@@ -22,39 +22,43 @@
       "Type" : "String",
       "Default" : "polly-api"
     },
-    "TopicName" : {
-      "Description" : "Enter SNS Topic Name",
-      "Type" : "String",
-      "Default" : "polly-sns"
-    },
     "ApiACMArn" : {
       "Description" : "ARN for the API ACM (must be created in us-east-1)",
       "Type" : "String",
-      "Default" : ""
+      "Default" : "arn:aws:acm:us-east-1:220065781146:certificate/99c23c6e-a2cf-4e83-ba1e-846f373e0d79"
     },
     "WebACMArn" : {
       "Description" : "ARN for the Web ACM (must be created in us-east-1)",
       "Type" : "String",
-      "Default" : ""
+      "Default" : "arn:aws:acm:us-east-1:220065781146:certificate/99c23c6e-a2cf-4e83-ba1e-846f373e0d79"
     },
     "GitHubLocation" : {
       "Description" : "Clone URL from GitHub for Code Build",
       "Type" : "String",
       "Default" : "https://github.com/mcliff1/polly.git"
+    },
+    "OAuthToken" : {
+      "Description" : "Token for GitHub repository to include in Code Pipeline",
+      "Type" : "String",
+      "Default" : ""
+    },
+    "Environment" : {
+      "Description" : "Used to load set of properties and common resource",
+      "Type" : "String",
+      "AllowedValues" : [ "develop", "prod" ]
     }
+
   },
   "Resources": {
     "SNSTopic" : {
       "Type" : "AWS::SNS::Topic",
       "Properties" : {
-        "TopicName": {"Fn::Sub": "${AWS::StackName}-GeneralTopic" },
         "DisplayName": {"Fn::Sub" : "General Announcments For ${AWS::StackName} network"}
       }
     },
     "SNSNewPostsTopic" : {
       "Type" : "AWS::SNS::Topic",
       "Properties" : {
-        "TopicName": {"Fn::Sub": "${AWS::StackName}-NewPostsTopic" },
         "DisplayName": {"Fn::Sub" : "New Posts (Lambda to Lambda connection) ${AWS::StackName}"}
       }
     },
@@ -67,6 +71,15 @@
         ]
       }
     },
+    "ArtifactStoreBucket" : {
+      "Type" : "AWS::S3::Bucket",
+      "Properties" : {
+        "Tags" : [
+          { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-ArtifactBucket"]]}},
+          { "Key" : "Project", "Value" : {"Ref": "Project"} }
+        ]
+      }
+    },
     "WebBucket" : {
       "Type" : "AWS::S3::Bucket",
       "Properties" : {
@@ -74,12 +87,16 @@
           "CorsRules" : [
             {
               "AllowedMethods" : [ "GET" ],
-              "AllowedOrigins" : [ "*" ],
+              "AllowedOrigins" : [ {"Fn::Join" : [".", ["*", {"Ref": "DomainName"}]]} ],
+              "AllowedHeaders" : ["*"],
+              "MaxAge" : 3000,
               "Id" : "corsRuleGet"
             },
             {
               "AllowedMethods" : [ "PUT", "POST", "DELETE" ],
-              "AllowedOrigins" : [ "*" ],
+              "AllowedOrigins" : [ {"Fn::Join" : [".", ["*", {"Ref": "DomainName"}]]} ],
+              "AllowedHeaders" : ["*"],
+              "MaxAge" : 3000,
               "Id" : "corsRuleModify"
             }
           ]
@@ -159,19 +176,158 @@
                   "Effect" : "Allow"
                 },
                 {
-                  "Sid" : "serverless",
+                  "Action" : [
+                    "sns:*"
+                  ],
+                  "Resource" : {"Ref": "SNSNewPostsTopic"},
+                  "Effect" : "Allow"
+                },
+                {
+                  "Action" : [
+                    "iam:DeleteRolePolicy",
+                    "iam:DeleteRole",
+                    "iam:PutRolePolicy",
+                    "iam:PassRole",
+                    "route53:ListHostedZones",
+                    "route53:ChangeResourceRecordSets",
+                    "route53:GetChange"
+                  ],
+                  "Resource" : "*",
+                  "Effect" : "Allow"
+                },
+                {
                   "Action" : [
                     "ssm:*",
-                    "cloudformation:*"
+                    "cloudformation:*",
+                    "cloudfront:*",
                     "apigateway:*",
+                    "iam:CreateRole",
                     "iam:GetRole",
                     "lambda:*"
                   ],
                   "Resource" : "*",
                   "Effect" : "Allow"
                 }
+
               ]
             }
+          }
+        ]
+      }
+    },
+    "CodePipelineRole" : {
+      "Type" : "AWS::IAM::Role",
+      "Properties" : {
+        "AssumeRolePolicyDocument" : {
+          "Statement" : [
+            {
+              "Effect" : "Allow",
+              "Principal" : {
+                "Service" : [
+                  "codepipeline.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path" : "/",
+        "Policies" : [
+          {
+            "PolicyName" : "codepipeline-service",
+            "PolicyDocument" : {
+              "Version" : "2012-10-17",
+              "Statement" : [
+                {
+                  "Action" : [
+                    "codepipeline:*",
+                    "codebuild:*"
+                  ],
+                  "Resource" : "*",
+                  "Effect" : "Allow"
+                },
+                {
+                  "Action" : [
+                    "s3:GetObject",
+                    "s3:GetObjectVersion",
+                    "s3:GetBucketVersioning"
+                  ],
+                  "Resource" : "*",
+                  "Effect" : "Allow"
+                },
+                {
+                  "Action" : [
+                    "s3:*",
+                    "logs:*"
+                  ],
+                  "Resource" : "*",
+                  "Effect" : "Allow"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CodePipeline" : {
+      "Type" : "AWS::CodePipeline::Pipeline",
+      "Properties" : {
+        "RoleArn" : {"Fn::GetAtt" : ["CodePipelineRole", "Arn"]},
+        "ArtifactStore" : {
+          "Type" : "S3",
+          "Location" : {"Ref" : "ArtifactStoreBucket"}
+        },
+        "Stages": [
+          {
+            "Name" : "Source",
+            "Actions" : [
+              {
+                "Name" : "SourceAction",
+                "ActionTypeId" : {
+                  "Category" : "Source",
+                  "Owner" : "ThirdParty",
+                  "Version" : "1",
+                  "Provider" : "GitHub"
+                },
+                "OutputArtifacts" : [
+                  { "Name" : "SourceOutput" }
+                ],
+                "Configuration" : {
+                  "Owner" : "mcliff1",
+                  "Repo" : "polly",
+                  "PollForSourceChanges" : "false",
+                  "Branch" : {"Ref" : "Environment"},
+                  "OAuthToken" : {"Ref" : "OAuthToken" }
+                },
+                "RunOrder" : 1
+              }
+            ]
+          },
+          {
+            "Name" : "Build",
+            "Actions" : [
+              {
+                "Name" : "BuildAction",
+                "InputArtifacts" : [
+                  {"Name" : "SourceOutput"}
+                ],
+                "ActionTypeId" : {
+                  "Category" : "Build",
+                  "Owner" : "AWS",
+                  "Version" : "1",
+                  "Provider" : "CodeBuild"
+                },
+                "Configuration" : {
+                  "ProjectName" : {"Ref" : "CodeBuild"}
+                },
+                "OutputArtifacts" : [
+                  { "Name" : "BuildOutput" }
+                ],
+                "RunOrder" : 1
+              }
+            ]
           }
         ]
       }
@@ -210,9 +366,9 @@
             }
           ],
           "DefaultCacheBehavior" : {
-            "ViewerProtocolPolicy" : "allow-all",
+            "ViewerProtocolPolicy" : "redirect-to-https",
             "TargetOriginId" : "S3Origin",
-            "AllowedMethods" : [ "GET", "HEAD" ],
+            "AllowedMethods" : [ "GET", "HEAD", "PUT", "POST", "PATCH", "DELETE", "OPTIONS" ],
             "Compress" : "true",
             "DefaultTTL" : "30",
             "MinTTL" : "10",
@@ -283,27 +439,32 @@
       "Type" : "AWS::CodeBuild::Project",
       "DependsOn" : "CodeBuildRole",
       "Properties" : {
-        "Name" : { "Ref" : "AWS::StackName" },
         "Description" : "Polly Application Code Build and Deployment",
         "Artifacts" : {
-          "Type" : "no_artifacts"
+          "Type" : "CODEPIPELINE"
         },
         "Environment" : {
           "Type" : "LINUX_CONTAINER",
           "ComputeType" : "BUILD_GENERAL1_SMALL",
-          "Image" : "aws/codebuild/nodejs:8.11.0",
+          "Image" : "mcliff/slsbuild:1.0.0",
           "EnvironmentVariables" : [
+            {
+              "Name" : "BRANCH",
+              "Value" : { "Ref" : "Environment" }
+            },
             {
               "Name" : "WEB_BUCKET",
               "Value" : { "Ref" : "WebBucket" }
+            },
+            {
+              "Name" : "STACK_NAME",
+              "Value" : { "Ref" : "AWS::StackName" }
             }
           ]
         },
         "ServiceRole" : { "Ref" : "CodeBuildRole" },
         "Source" : {
-          "Type" : "GITHUB",
-          "Location" : { "Ref" : "GitHubLocation"},
-          "GitCloneDepth" : 1
+          "Type" : "CODEPIPELINE"
         },
         "Tags" : [
           { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-CodeBuild"]]}},
@@ -388,7 +549,7 @@
     },
     "DomainName" : {
       "Description" : "Domain Name to be used",
-      "Value" : {"Ref": "SNSTopic"},
+      "Value" : {"Ref": "DomainName"},
       "Export" : {"Name" : {"Fn::Sub": "${AWS::StackName}-DomainName"}}
     },
     "ApiHostName" : {

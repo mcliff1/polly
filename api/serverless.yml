@@ -13,7 +13,7 @@ service: polly-api
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
-  stack: ${opt:stack, 'pollybase'}
+  stack: ${opt:stack, 'pollybase'} # base reference stack
 
   pollydb: ${ssm:/${self:custom.stack}/pollyDB}
   audiobucket: ${ssm:/${self:custom.stack}/audioBucketName}
@@ -184,4 +184,4 @@ resources:
             - ".amazonaws.com/"
             - ${self:custom.stage}
       Export:
-        Name: PollyServiceEndPoint
+        Name: ${self:service}-${self:custom.stage}-PollyServiceEndPoint

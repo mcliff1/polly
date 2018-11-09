@@ -9,6 +9,11 @@
   font-size:14px;
 }
 
+.nav {
+  color: #333;
+  float: none;
+}
+
 .App-header {
   background-color: #f90;
   height: 50px;

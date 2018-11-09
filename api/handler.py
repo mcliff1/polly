@@ -17,7 +17,7 @@ returns JSON object from DB for data of id or all of database
 """
 def handle_get(event):
     method = 'handle_get():'
-    LOGGER.debug('%sbegin', method)
+    LOGGER.debug('%sbegin:%s', method, event)
 
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(os.environ['DB_TABLE_NAME'])
