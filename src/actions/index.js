@@ -7,7 +7,7 @@
 // utility const for API
 //export const API_ENDPOINT = 'https://polly-dev-api.mattcliff.net/pollydev';
 export const API_ENDPOINT = 'https://' + process.env.REACT_APP_API_ENDPOINT + '/pollydev';
-console.log('using endpoint:' +  API_ENDPOINT);
+console.log('using (action/index) endpoint:' +  API_ENDPOINT);
 
 
 export const updateText = (text) => ({
