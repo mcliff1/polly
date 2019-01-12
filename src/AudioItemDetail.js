@@ -2,8 +2,10 @@ import React from 'react';
 
 
 
-const AudioListViewDetail = ({item}) => {
+const AudioItemDetail = ({item}) => {
   return(
+    <div>
+    <table><tbody>
     <tr>
       <td>{item.id}</td>
       <td>{item.voice}</td>
@@ -20,8 +22,9 @@ const AudioListViewDetail = ({item}) => {
         }
       </td>
       <td>del</td>
-    </tr>
+    </tr></tbody></table>
+    </div>
   );
 }
 
-export default AudioListViewDetail;
+export default AudioItemDetail;

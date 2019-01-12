@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import AudioListViewDetail from './AudioListViewDetail';
+import AudioItemDetail from './AudioItemDetail';
 import { updateItem } from './actions'
 
 const AudioItem = ({needsUpdate, handleUpdate, audioItem, audioItemId}) => {
@@ -15,7 +15,7 @@ const AudioItem = ({needsUpdate, handleUpdate, audioItem, audioItemId}) => {
   return(
     <div>
       <p>Get this thing to show the most recently generated item</p>
-      <AudioListViewDetail item={audioItem} />
+      <AudioItemDetail item={audioItem} />
     </div>
   );
 }

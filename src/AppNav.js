@@ -35,7 +35,7 @@ class AppNav extends Component {
       <Navbar color="white" light expand="md">
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
-        <Nav className="ml-auto" nav>
+        <Nav className="ml-auto" nav="true">
         <NavItem>
           <NavLink to="/" tag={RRNavLink}>Home</NavLink>
         </NavItem>
