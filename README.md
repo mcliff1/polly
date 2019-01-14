@@ -82,3 +82,8 @@ Had all sorts of trouble trying to get CI stream working with CORS in the target
 ## TODO
 
 - Review and reduce permission sets on CodeBuild role to required assets
+
+
+### Build Notes
+
+finally figured out why my polly form wasn't updating,  but it is still not getting the new audio (the meta data is there)
