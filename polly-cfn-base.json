@@ -116,6 +116,86 @@
         }
       }
     },
+    "CodeBuildPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "Groups": [
+          {"Ref": "CodeBuildGroup"}
+        ],
+        "Roles": [
+          {"Ref": "CodeBuildRole"}
+        ],
+        "PolicyName": "tms-codebuildpolicy",
+        "PolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement" : [
+            {
+              "Action" : [
+                "codebuild:*"
+              ],
+              "Resource" : "*",
+              "Effect" : "Allow"
+            },
+            {
+              "Action" : [
+                "s3:GetObject",
+                "s3:GetObjectVersion",
+                "s3:GetBucketVersioning"
+              ],
+              "Resource" : "*",
+              "Effect" : "Allow"
+            },
+            {
+              "Action" : [
+                "s3:*",
+                "logs:*"
+              ],
+              "Resource" : "*",
+              "Effect" : "Allow"
+            },
+            {
+              "Action" : [
+                "sns:*"
+              ],
+              "Resource" : {"Ref": "SNSNewPostsTopic"},
+              "Effect" : "Allow"
+            },
+            {
+              "Action" : [
+                "iam:DeleteRolePolicy",
+                "iam:DeleteRole",
+                "iam:PutRolePolicy",
+                "iam:PassRole",
+                "route53:ListHostedZones",
+                "route53:ChangeResourceRecordSets",
+                "route53:GetChange"
+              ],
+              "Resource" : "*",
+              "Effect" : "Allow"
+            },
+            {
+              "Action" : [
+                "ssm:*",
+                "cloudformation:*",
+                "cloudfront:*",
+                "apigateway:*",
+                "iam:CreateRole",
+                "iam:GetRole",
+                "lambda:*"
+              ],
+              "Resource" : "*",
+              "Effect" : "Allow"
+            }
+
+          ]
+        }
+      }
+    },
+    "CodeBuildGroup": {
+      "Type": "AWS::IAM::Group",
+      "Properties": {
+      }
+    },
     "CodeBuildRole" : {
       "Type" : "AWS::IAM::Role",
       "Properties" : {
@@ -133,76 +213,7 @@
               ]
             }
           ]
-        },
-        "Path" : "/",
-        "Policies" : [
-          {
-            "PolicyName" : "codebuild-service",
-            "PolicyDocument" : {
-              "Version" : "2012-10-17",
-              "Statement" : [
-                {
-                  "Action" : [
-                    "codebuild:*"
-                  ],
-                  "Resource" : "*",
-                  "Effect" : "Allow"
-                },
-                {
-                  "Action" : [
-                    "s3:GetObject",
-                    "s3:GetObjectVersion",
-                    "s3:GetBucketVersioning"
-                  ],
-                  "Resource" : "*",
-                  "Effect" : "Allow"
-                },
-                {
-                  "Action" : [
-                    "s3:*",
-                    "logs:*"
-                  ],
-                  "Resource" : "*",
-                  "Effect" : "Allow"
-                },
-                {
-                  "Action" : [
-                    "sns:*"
-                  ],
-                  "Resource" : {"Ref": "SNSNewPostsTopic"},
-                  "Effect" : "Allow"
-                },
-                {
-                  "Action" : [
-                    "iam:DeleteRolePolicy",
-                    "iam:DeleteRole",
-                    "iam:PutRolePolicy",
-                    "iam:PassRole",
-                    "route53:ListHostedZones",
-                    "route53:ChangeResourceRecordSets",
-                    "route53:GetChange"
-                  ],
-                  "Resource" : "*",
-                  "Effect" : "Allow"
-                },
-                {
-                  "Action" : [
-                    "ssm:*",
-                    "cloudformation:*",
-                    "cloudfront:*",
-                    "apigateway:*",
-                    "iam:CreateRole",
-                    "iam:GetRole",
-                    "lambda:*"
-                  ],
-                  "Resource" : "*",
-                  "Effect" : "Allow"
-                }
-
-              ]
-            }
-          }
-        ]
+        }
       }
     },
     "CodePipelineRole" : {

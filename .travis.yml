@@ -11,7 +11,6 @@ script:
   - export AWS_DEFAULT_REGION=us-west-2
   - export BUILD_BUCKET=sam-build-ci
   - export SAM_STACK_NAME=polly-api-pollydev
-  - cd api
   - sam validate
   #- sam --region us-west-2 validate
   - sam package --template-file template.yaml --s3-bucket ${BUILD_BUCKET} --output-template-file interim-template.yaml

@@ -1,0 +1,109 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Polly Service
+
+
+Parameters:
+  DomainName:
+    Type: String
+    Description: DNS Domain Name (must have Hosted Zone in R53)
+
+  CertificateArn:
+    Type: String
+    Description: ARN for SSL certificate (us-east-1)
+
+  WebName:
+    Type: String
+    Description: Web Page Hostname
+  ApiName:
+    Type: String
+    Description: API Hostname
+
+Globals:
+  Function:
+    Runtime: python3.6
+  Api:
+    # enable cors
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      # TODO make this be for WebName.DomainName or ApiName.DomainName
+      AllowOrigin: "'*'"
+
+Resources:
+
+  PollyApi:
+    Type:  AWS::Serverless::Function
+    Properties:
+      Handler: handler.apihandler
+      Runtime: python3.6
+      CodeUri: api/
+      Policies: AmazonDynamoDBReadOnlyAccess
+      # Environment:
+      #   Variables:
+      #     TABLE_NAME: !Ref Table
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+        PostResource:
+          Type: Api
+          Properties:
+            Path: /
+            Method: post
+
+  ConvertAudio:
+    Type:  AWS::Serverless::Function
+    Properties:
+      Handler: convert_audio.lambda_handler
+      CodeUri: api/
+      Policies: AmazonDynamoDBReadOnlyAccess
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref AudioBucket
+      Events:
+        GetResource:
+          Type: SNS
+          Properties:
+            Topic: !GetAtt SnsTopic.Arn
+
+
+  AudioBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      Tags:
+        - { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-AudioBucket"]]}}
+        - { "Key" : "Project", "Value" : {"Ref": "Project"} }
+
+
+
+  SNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: {"Fn::Sub" : "General Announcments For ${AWS::StackName} network"}
+
+  SNSNewPostsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: {"Fn::Sub" : "New Posts (Lambda to Lambda connection) ${AWS::StackName}"}
+
+
+
+
+
+Outputs:
+  ApiURL:
+    Description: "API endpoint"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/resource/"
+  WebBucket:
+    Description: "Web Bucket"
+    Value: !Ref WebBucket
+  # ReactConfig:
+  #   Description: JSON configuration to insert in REACT
+  #   Value: !Join ["", [ "{\"userPool\":\"", {"Ref": "UserPool"},
+  #        "\", \"clientId\":\"", {"Ref": "UserPoolClient"},
+  #        "\", \"region\":\"", {"Ref": "AWS::Region"},
+  #        "\", \"apiCarrier\":\"", {"Fn::Sub": "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/resource/"},
+  #        "\"}" ]]
