@@ -67,7 +67,7 @@ Resources:
         GetResource:
           Type: SNS
           Properties:
-            Topic: !GetAtt SnsTopic.Arn
+            Topic: !GetAtt SNSTopic.Arn
 
 
   AudioBucket:
