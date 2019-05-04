@@ -32,16 +32,6 @@
       "Type" : "String",
       "Default" : "arn:aws:acm:us-east-1:220065781146:certificate/99c23c6e-a2cf-4e83-ba1e-846f373e0d79"
     },
-    "GitHubLocation" : {
-      "Description" : "Clone URL from GitHub for Code Build",
-      "Type" : "String",
-      "Default" : "https://github.com/mcliff1/polly.git"
-    },
-    "OAuthToken" : {
-      "Description" : "Token for GitHub repository to include in Code Pipeline",
-      "Type" : "String",
-      "Default" : ""
-    },
     "Environment" : {
       "Description" : "Used to load set of properties and common resource",
       "Type" : "String",
@@ -271,67 +261,6 @@
         ]
       }
     },
-    "CodePipeline" : {
-      "Type" : "AWS::CodePipeline::Pipeline",
-      "Properties" : {
-        "RoleArn" : {"Fn::GetAtt" : ["CodePipelineRole", "Arn"]},
-        "ArtifactStore" : {
-          "Type" : "S3",
-          "Location" : {"Ref" : "ArtifactStoreBucket"}
-        },
-        "Stages": [
-          {
-            "Name" : "Source",
-            "Actions" : [
-              {
-                "Name" : "SourceAction",
-                "ActionTypeId" : {
-                  "Category" : "Source",
-                  "Owner" : "ThirdParty",
-                  "Version" : "1",
-                  "Provider" : "GitHub"
-                },
-                "OutputArtifacts" : [
-                  { "Name" : "SourceOutput" }
-                ],
-                "Configuration" : {
-                  "Owner" : "mcliff1",
-                  "Repo" : "polly",
-                  "PollForSourceChanges" : "false",
-                  "Branch" : {"Ref" : "Environment"},
-                  "OAuthToken" : {"Ref" : "OAuthToken" }
-                },
-                "RunOrder" : 1
-              }
-            ]
-          },
-          {
-            "Name" : "Build",
-            "Actions" : [
-              {
-                "Name" : "BuildAction",
-                "InputArtifacts" : [
-                  {"Name" : "SourceOutput"}
-                ],
-                "ActionTypeId" : {
-                  "Category" : "Build",
-                  "Owner" : "AWS",
-                  "Version" : "1",
-                  "Provider" : "CodeBuild"
-                },
-                "Configuration" : {
-                  "ProjectName" : {"Ref" : "CodeBuild"}
-                },
-                "OutputArtifacts" : [
-                  { "Name" : "BuildOutput" }
-                ],
-                "RunOrder" : 1
-              }
-            ]
-          }
-        ]
-      }
-    },
     "AudioBucket" : {
       "Type" : "AWS::S3::Bucket",
       "Properties" : {
@@ -433,43 +362,6 @@
           "ReadCapacityUnits" : 1,
           "WriteCapacityUnits" : 1
         }
-      }
-    },
-    "CodeBuild": {
-      "Type" : "AWS::CodeBuild::Project",
-      "DependsOn" : "CodeBuildRole",
-      "Properties" : {
-        "Description" : "Polly Application Code Build and Deployment",
-        "Artifacts" : {
-          "Type" : "CODEPIPELINE"
-        },
-        "Environment" : {
-          "Type" : "LINUX_CONTAINER",
-          "ComputeType" : "BUILD_GENERAL1_SMALL",
-          "Image" : "mcliff/slsbuild:1.0.0",
-          "EnvironmentVariables" : [
-            {
-              "Name" : "BRANCH",
-              "Value" : { "Ref" : "Environment" }
-            },
-            {
-              "Name" : "WEB_BUCKET",
-              "Value" : { "Ref" : "WebBucket" }
-            },
-            {
-              "Name" : "STACK_NAME",
-              "Value" : { "Ref" : "AWS::StackName" }
-            }
-          ]
-        },
-        "ServiceRole" : { "Ref" : "CodeBuildRole" },
-        "Source" : {
-          "Type" : "CODEPIPELINE"
-        },
-        "Tags" : [
-          { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-CodeBuild"]]}},
-          { "Key" : "Project", "Value" : {"Ref": "Project"} }
-        ]
       }
     },
     "ssmDomainName": {
