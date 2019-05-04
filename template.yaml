@@ -96,7 +96,8 @@ Resources:
         IndexDocument: index.html
         ErrorDocument: index.html
       Tags:
-        -  { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-WebBucket"]]}},
+        - Key: Name"
+          Value: {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-WebBucket"]]}}
 
   WebBucketPolicy:
     Type: AWS::S3::BucketPolicy
