@@ -75,7 +75,6 @@ Resources:
     Properties:
       Tags:
         - { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-AudioBucket"]]}}
-        - { "Key" : "Project", "Value" : {"Ref": "Project"} }
 
 
 

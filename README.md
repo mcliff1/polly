@@ -14,6 +14,16 @@ To run in a AWS account, Travis CI can be used as follows:
 - for the branch you want to build create the */travisci/polly/BRANCH* **SSM** parameter with the following properties in JSON format: CertARN, Domain, Hostname
 
 
+```
+{
+  "StackName": "name_of_stack_for_the_branch",
+  "CertARN": "arn_of_cert_in_us_east_1",
+  "DomainName": "domain_name_in_r53_hosted_zones",
+  "WebName": "polly-web",
+  "ApiName": "polly-api"
+}
+```
+
 * [Production](https://polly.mattcliff.net/)
 * [Dev](https://polly-dev.mattcliff.net/)
 
