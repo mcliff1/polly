@@ -77,6 +77,40 @@ Resources:
         - { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-AudioBucket"]]}}
 
 
+  WebBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods: [ "GET" ]
+            AllowedOrigins: [ {"Fn::Join" : [".", ["*", {"Ref": "DomainName"}]]} ]
+            AllowedHeaders: ["*"]
+            MaxAge: 3000
+            Id: "corsRuleGet"
+          - AllowedMethods: [ "PUT", "POST", "DELETE" ]
+            AllowedOrigins: [ {"Fn::Join" : [".", ["*", {"Ref": "DomainName"}]]} ]
+            AllowedHeaders: ["*"]
+            MaxAge: 3000
+            Id: "corsRuleModify"
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+      Tags:
+        -  { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-WebBucket"]]}},
+
+  WebBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: { "Ref" : "WebBucket" }
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          Action: S3:GetObject
+          Resource: { "Fn::Join" : [ "", ["arn:aws:s3:::", { "Ref" : "WebBucket"}, "/*"]] }
+          Principal: "*"
+          Effect: Allow
+
+
 
   SNSTopic:
     Type: AWS::SNS::Topic
