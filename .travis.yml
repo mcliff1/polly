@@ -11,10 +11,27 @@ script:
   - export AWS_DEFAULT_REGION=us-west-2
   - export BUILD_BUCKET=sam-build-ci
   - export SAM_STACK_NAME=polly-api-pollydev
+  # - BASE_CONFIG=$(aws ssm get-parameter --name /travsci/polly | jq -r '.Parameter.Value')
+  # - echo $BASE_CONFIG
+  # - S3_BUILD_BUCKET=$(echo $BASE_CONFIG | jq -r '.build_bucket')
+  # - CONFIG=$(aws ssm get-parameter --name /travisci/polly/${CI_COMMIT_REF_NAME} | jq -r '.Parameter.Value')
+  # - echo $CONFIG
+  # - STACK_NAME=$(echo $CONFIG | jq -r '.stack_name')
+  # - DOMAIN_NAME=$(echo $CONFIG | jq -r '.domain_name')
+  # - WEB_NAME=$(echo $CONFIG | jq -r '.web_name')
+  # - API_NAME=$(echo $CONFIG | jq -r '.api_name')
+  # - CERT_ARN=$(echo $CONFIG | jq -r '.cert_arn')
+  - STACK_NAME=polly-develop1
+  - DOMAIN_NAME=mattcliff.net
+  - WEB_NAME=polly2
+  - API_NAME=polly2-api
+  - CERT_ARN=
   - sam validate
   #- sam --region us-west-2 validate
   - sam package --template-file template.yaml --s3-bucket ${BUILD_BUCKET} --output-template-file interim-template.yaml
-  - sam deploy  --template-file interim-template.yaml --stack-name ${SAM_STACK_NAME} --capabilities CAPABILITY_IAM
+  #- sam deploy  --template-file interim-template.yaml --stack-name ${SAM_STACK_NAME} --capabilities CAPABILITY_IAM
+  - sam deploy --parameter-overrides DomainName=${DOMAIN_NAME} CertificateArn=${CERT_ARN} ApiName=${API_NAME} WebName=${WEB_NAME} --template-file interim-template.yaml --stack-name ${STACK_NAME} --capabilities CAPABILITY_IAM
+
 notifications:
   email:
     on_failure: always

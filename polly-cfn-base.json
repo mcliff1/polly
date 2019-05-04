@@ -165,6 +165,7 @@
                 "iam:DeleteRolePolicy",
                 "iam:DeleteRole",
                 "iam:PutRolePolicy",
+                "iam:ListPolicies",
                 "iam:PassRole",
                 "route53:ListHostedZones",
                 "route53:ChangeResourceRecordSets",

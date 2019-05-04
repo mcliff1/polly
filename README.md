@@ -6,6 +6,14 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 there is also a REACT UI that gets deployed to S3 to present the tool
 
+### May 4 - Build and Setup
+
+To run in a AWS account, Travis CI can be used as follows:
+- in the AWS account create the *polly-cfn-base.json* stack,  in Travis CI (linked to your Github where this is cloned too) (whatever region you create the base stack)
+-  the Environment Variables *AWS_ACCESS_KEY_ID* and *AWS_SECRET_ACCESS_KEY* to a User that has the role created in the base stack.
+- for the branch you want to build create the */travisci/polly/BRANCH* **SSM** parameter with the following properties in JSON format: CertARN, Domain, Hostname
+
+
 * [Production](https://polly.mattcliff.net/)
 * [Dev](https://polly-dev.mattcliff.net/)
 
