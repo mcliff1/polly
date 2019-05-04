@@ -96,7 +96,7 @@ Resources:
         IndexDocument: index.html
         ErrorDocument: index.html
       Tags:
-        - Key: Name"
+        - Key: Name
           Value: {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-WebBucket"]]}}
 
   WebBucketPolicy:
