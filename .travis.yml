@@ -21,10 +21,10 @@ script:
   # - WEB_NAME=$(echo $CONFIG | jq -r '.web_name')
   # - API_NAME=$(echo $CONFIG | jq -r '.api_name')
   # - CERT_ARN=$(echo $CONFIG | jq -r '.cert_arn')
-  - STACK_NAME=polly-develop1
+  - STACK_NAME=polly-develop3
   - DOMAIN_NAME=mattcliff.net
-  - WEB_NAME=polly2
-  - API_NAME=polly2-api
+  - WEB_NAME=polly3
+  - API_NAME=polly3-api
   - CERT_ARN="arn:aws:acm:us-west-2:220065781146:certificate/6eab0866-650c-4c29-8dc8-5450f0d3d402"
   - sam validate
   #- sam --region us-west-2 validate

@@ -131,7 +131,8 @@
           "Statement" : [
             {
               "Action" : [
-                "codebuild:*"
+                "dynamodb:CreateTable",
+                "dynamodb:DeleteTable"
               ],
               "Resource" : "*",
               "Effect" : "Allow"
