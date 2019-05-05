@@ -132,7 +132,8 @@
             {
               "Action" : [
                 "dynamodb:CreateTable",
-                "dynamodb:DeleteTable"
+                "dynamodb:DeleteTable",
+                "dynamodb:DescribeTable"
               ],
               "Resource" : "*",
               "Effect" : "Allow"
