@@ -25,7 +25,7 @@ script:
   - DOMAIN_NAME=mattcliff.net
   - WEB_NAME=polly2
   - API_NAME=polly2-api
-  - CERT_ARN=
+  - CERT_ARN="arn:aws:acm:us-west-2:220065781146:certificate/6eab0866-650c-4c29-8dc8-5450f0d3d402"
   - sam validate
   #- sam --region us-west-2 validate
   - sam package --template-file template.yaml --s3-bucket ${BUILD_BUCKET} --output-template-file interim-template.yaml
