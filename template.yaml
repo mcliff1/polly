@@ -134,7 +134,7 @@ Resources:
           SslSupportMethod: sni-only
         Enabled: true
         HttpVersion: http2
-        Aliases: [ {"Fn::Join": [".", [ {"Ref": "WebHostName"}, {"Ref": "DomainName"}]]} ]
+        Aliases: [ {"Fn::Join": [".", [ {"Ref": "WebName"}, {"Ref": "DomainName"}]]} ]
         DefaultRootObject: "index.html"
         Origins:
           - DomainName: { "Fn::Join" : [ "." ,  [ { "Ref" : "WebBucket"}, {"Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region"}, "websiteendpoint"] }]]}
@@ -171,7 +171,7 @@ Resources:
       Comment: "SSL URL for Project"
       Type: "A"
       HostedZoneName : { "Fn::Join" : [ "", [ {"Ref" : "DomainName"}, "."]]}
-      Name: {"Fn::Join": ["", [ {"Ref" :"WebHostName"}, ".", {"Ref" : "DomainName"}, "."]]}
+      Name: {"Fn::Join": ["", [ {"Ref" :"WebName"}, ".", {"Ref" : "DomainName"}, "."]]}
       AliasTarget:
         HostedZoneId: "Z2FDTNDATAQYW2"
         DNSName: { "Fn::GetAtt" : [ "WebCDN" , "DomainName"]}
@@ -204,7 +204,7 @@ Outputs:
     Value: !Ref WebBucket
   WebSite:
     Description: URL to access application
-    Value: {"Fn::Join": ["", [ {"Ref" :"WebHostName"}, ".", {"Ref" : "DomainName"}]]}
+    Value: {"Fn::Join": ["", [ {"Ref" :"WebName"}, ".", {"Ref" : "DomainName"}]]}
   # ReactConfig:
   #   Description: JSON configuration to insert in REACT
   #   Value: !Join ["", [ "{\"userPool\":\"", {"Ref": "UserPool"},
