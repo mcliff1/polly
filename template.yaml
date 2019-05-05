@@ -180,7 +180,7 @@ Resources:
     Type: "AWS::DynamoDB::Table"
     Properties:
       AttributeDefinitions:
-        - AttributeNam : "id"
+        - AttributeName : "id"
           AttributeType: "S"
       KeySchema:
         - AttributeName: "id"
