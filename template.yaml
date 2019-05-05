@@ -130,7 +130,7 @@ Resources:
     Properties:
       DistributionConfig:
         ViewerCertificate:
-          AcmCertificateArn: { "Ref" : "WebACMArn" }
+          AcmCertificateArn: { "Ref" : "CertificateArn" }
           SslSupportMethod: sni-only
         Enabled: true
         HttpVersion: http2
