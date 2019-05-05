@@ -171,7 +171,7 @@ Resources:
       Comment: "SSL URL for Project"
       Type: "A"
       HostedZoneName : { "Fn::Join" : [ "", [ {"Ref" : "DomainName"}, "."]]}
-      Name: !Join" ["", [ {"Ref" :"WebHostName"}, ".", {"Ref" : "DomainName"}, "."]]
+      Name: {"Fn::Join": ["", [ {"Ref" :"WebHostName"}, ".", {"Ref" : "DomainName"}, "."]]}
       AliasTarget:
         HostedZoneId: "Z2FDTNDATAQYW2"
         DNSName: { "Fn::GetAtt" : [ "WebCDN" , "DomainName"]}
