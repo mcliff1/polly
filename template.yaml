@@ -125,6 +125,74 @@ Resources:
 
 
 
+  WebCDN:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        ViewerCertificate:
+          AcmCertificateArn: { "Ref" : "WebACMArn" }
+          SslSupportMethod: sni-only
+        Enabled: true
+        HttpVersion: http2
+        Aliases: [ {"Fn::Join": [".", [ {"Ref": "WebHostName"}, {"Ref": "DomainName"}]]} ]
+        DefaultRootObject: "index.html"
+        Origins:
+          - DomainName: { "Fn::Join" : [ "." ,  [ { "Ref" : "WebBucket"}, {"Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region"}, "websiteendpoint"] }]]}
+            Id: S3Origin
+            CustomOriginConfig:
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginProtocolPolicy: "http-only"
+        DefaultCacheBehavior:
+          ViewerProtocolPolicy: "redirect-to-https"
+          TargetOriginId: "S3Origin"
+          AllowedMethods: [ "GET", "HEAD", "PUT", "POST", "PATCH", "DELETE", "OPTIONS" ]
+          Compress: "true"
+          DefaultTTL: "30"
+          MinTTL: "10"
+          ForwardedValues:
+            QueryString: true
+            Headers:
+              - Access-Control-Request-Headers
+              -  Access-Control-Request-Method
+              -  Origin
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: "/index.html"
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: "/index.html"
+
+
+  WebDNS:
+    Type: "AWS::Route53::RecordSet"
+    Properties:
+      Comment: "SSL URL for Project"
+      Type: "A"
+      HostedZoneName : { "Fn::Join" : [ "", [ {"Ref" : "DomainName"}, "."]]}
+      Name: !Join" ["", [ {"Ref" :"WebHostName"}, ".", {"Ref" : "DomainName"}, "."]]
+      AliasTarget:
+        HostedZoneId: "Z2FDTNDATAQYW2"
+        DNSName: { "Fn::GetAtt" : [ "WebCDN" , "DomainName"]}
+
+  PollyDB:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        - AttributeName" : "id"
+          AttributeType" : "S"
+      KeySchema:
+        - AttributeName: "id"
+          KeyType: "HASH"
+      Tags:
+        - { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-PollyDynamoDB"]]}}
+        - { "Key" : "Project", "Value" : {"Ref": "Project"} }
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+
 
 
 Outputs:
@@ -134,6 +202,9 @@ Outputs:
   WebBucket:
     Description: "Web Bucket"
     Value: !Ref WebBucket
+  WebSite:
+    Description: URL to access application
+    Value: !
   # ReactConfig:
   #   Description: JSON configuration to insert in REACT
   #   Value: !Join ["", [ "{\"userPool\":\"", {"Ref": "UserPool"},
