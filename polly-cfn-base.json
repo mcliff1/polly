@@ -125,7 +125,7 @@
         "Roles": [
           {"Ref": "CodeBuildRole"}
         ],
-        "PolicyName": "tms-codebuildpolicy",
+        "PolicyName": "polly-codebuildpolicy",
         "PolicyDocument": {
           "Version" : "2012-10-17",
           "Statement" : [
@@ -162,14 +162,27 @@
             },
             {
               "Action" : [
+                "sns:CreateTopic",
+                "sns:GetTopicAttributes",
+                "sns:DeleteTopic",
+                "sns:Subscribe"
+              ],
+              "Resource" : "*",
+              "Effect" : "Allow"
+            },
+            {
+              "Action" : [
                 "iam:DeleteRolePolicy",
+                "iam:DetachRolePolicy",
                 "iam:DeleteRole",
+                "iam:AttachRolePolicy",
                 "iam:PutRolePolicy",
                 "iam:ListPolicies",
                 "iam:PassRole",
                 "route53:ListHostedZones",
                 "route53:ChangeResourceRecordSets",
-                "route53:GetChange"
+                "route53:GetChange",
+                "sns:CreateTopic"
               ],
               "Resource" : "*",
               "Effect" : "Allow"

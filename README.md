@@ -27,6 +27,9 @@ To run in a AWS account, Travis CI can be used as follows:
 * [Production](https://polly.mattcliff.net/)
 * [Dev](https://polly-dev.mattcliff.net/)
 
+
+TODO: permissions in the CodeBuildPolicy should line up with naming conventions for stack resources
+
 ## Architecture
 
 contains a REACT static layer server through an **AWS CloudFront** and a python backed **Lambda** function served through **API Gateway**. A **S3**, and **DynamoDB** are used to store session information and outputs.
