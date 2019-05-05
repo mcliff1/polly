@@ -187,7 +187,6 @@ Resources:
           KeyType: "HASH"
       Tags:
         - { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-PollyDynamoDB"]]}}
-        - { "Key" : "Project", "Value" : {"Ref": "Project"} }
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
