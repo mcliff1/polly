@@ -204,7 +204,7 @@ Outputs:
     Value: !Ref WebBucket
   WebSite:
     Description: URL to access application
-    Value: !
+    Value: {"Fn::Join": ["", [ {"Ref" :"WebHostName"}, ".", {"Ref" : "DomainName"}]]}
   # ReactConfig:
   #   Description: JSON configuration to insert in REACT
   #   Value: !Join ["", [ "{\"userPool\":\"", {"Ref": "UserPool"},
