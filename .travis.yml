@@ -31,6 +31,10 @@ script:
   - sam package --template-file template.yaml --s3-bucket ${BUILD_BUCKET} --output-template-file interim-template.yaml
   #- sam deploy  --template-file interim-template.yaml --stack-name ${SAM_STACK_NAME} --capabilities CAPABILITY_IAM
   - sam deploy --parameter-overrides DomainName=${DOMAIN_NAME} CertificateArn=${CERT_ARN} ApiName=${API_NAME} WebName=${WEB_NAME} --template-file interim-template.yaml --stack-name ${STACK_NAME} --capabilities CAPABILITY_IAM
+  - npm install
+  #- npm run build
+  - API_ENDPOINT=api-dev-test
+  - REACT_APP_API_ENDPOINT=${API_ENDPOINT} npm run build
 
 notifications:
   email:
