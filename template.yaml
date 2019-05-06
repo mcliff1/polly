@@ -151,14 +151,15 @@ Resources:
           TargetOriginId: "S3Origin"
           AllowedMethods: [ "GET", "HEAD", "PUT", "POST", "PATCH", "DELETE", "OPTIONS" ]
           Compress: "true"
-          DefaultTTL: "30"
-          MinTTL: "10"
+          DefaultTTL: 30
+          MinTTL: 10
+          MaxTTL: 60
           ForwardedValues:
             QueryString: true
             Headers:
               - Access-Control-Request-Headers
-              -  Access-Control-Request-Method
-              -  Origin
+              - Access-Control-Request-Method
+              - Origin
         CustomErrorResponses:
           - ErrorCode: 404
             ResponseCode: 200
