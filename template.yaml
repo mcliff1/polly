@@ -22,6 +22,9 @@ Parameters:
 Globals:
   Function:
     Runtime: python3.6
+    Environment:
+      Variables:
+        DB_TABLE_NAME: !Ref PollyDB
   Api:
     # enable cors
     Cors:
