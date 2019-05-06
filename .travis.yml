@@ -35,6 +35,9 @@ script:
   #- npm run build
   - API_ENDPOINT=api-dev-test
   - REACT_APP_API_ENDPOINT=${API_ENDPOINT} npm run build
+  - WEB_BUCKET=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query 'Stacks[0].Outputs[?OutputKey==`WebBucket`].OutputValue' --output text)
+  - echo "WEB_BUCKET is $WEB_BUCKET"
+  - aws s3 sync ./build s3://$WEB_BUCKET/ --delete --acl public-read
 
 notifications:
   email:
