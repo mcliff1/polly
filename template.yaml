@@ -235,7 +235,8 @@ Resources:
 Outputs:
   ApiURL:
     Description: "API endpoint"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/resource/"
+    #Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/resource/"
+    Value: {"Fn::Join": ["", [ {"Ref" :"ApiName"}, ".", {"Ref" : "DomainName"}]]}
   WebBucket:
     Description: "Web Bucket"
     Value: !Ref WebBucket
