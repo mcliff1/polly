@@ -10,7 +10,7 @@ script:
   - aws sts get-caller-identity
   - export AWS_DEFAULT_REGION=us-west-2
   #- export SAM_STACK_NAME=polly-api-pollydev
-  - BASE_CONFIG=$(aws ssm get-parameter --name /travsci/polly | jq -r '.Parameter.Value')
+  - BASE_CONFIG=$(aws ssm get-parameter --name /travisci/polly | jq -r '.Parameter.Value')
   - echo $BASE_CONFIG
   - S3_BUILD_BUCKET=$(echo $BASE_CONFIG | jq -r '.build_bucket')
   - echo "Travis branch is $TRAVIS_BRANCH"
