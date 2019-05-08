@@ -149,10 +149,10 @@ Resources:
         DefaultCacheBehavior:
           ViewerProtocolPolicy: "redirect-to-https"
           TargetOriginId: "S3Origin"
-          AllowedMethods: [ "GET", "HEAD", "PUT", "POST", "PATCH", "DELETE", "OPTIONS" ]
+          AllowedMethods: [ GET, HEAD ]
           Compress: "true"
           DefaultTTL: 30
-          MinTTL: 10
+          MinTTL: 0
           MaxTTL: 60
           ForwardedValues:
             QueryString: true
