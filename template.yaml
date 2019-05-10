@@ -25,7 +25,7 @@ Globals:
     Environment:
       Variables:
         DB_TABLE_NAME: !Ref PollyDB
-        SNS_TOPIC: !GetAtt SNSTopic.Arn
+        SNS_TOPIC: !Ref SNSTopic
   Api:
     # enable cors
     Cors:
@@ -51,10 +51,11 @@ Resources:
                 - dynamodb:Delete*
                 - dynamodb:Update*
               Resource: !Join ["", ["arn:aws:dynamodb:*:*:table/", !Ref PollyDB]]
+              #Resource: !GetAtt PollyDB.Arn
             - Effect: Allow
               Action:
                 - sns:Publish
-              Resource: !Join ["", ["arn:aws:dynamodb:*:*:", !Ref SNSTopic]]
+              Resource: !Ref SNSTopic
       Events:
         GetResource:
           Type: Api
