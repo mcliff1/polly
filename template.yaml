@@ -62,7 +62,16 @@ Resources:
     Properties:
       Handler: convert_audio.lambda_handler
       CodeUri: api/
-      Policies: AmazonDynamoDBReadOnlyAccess
+      Policies:
+        - AmazonDynamoDBReadOnlyAccess
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:PutItem
+                - dynamodb:Delete*
+                - dynamodb:Update*
+              Resource: !Join ["", ["arn:aws:dynamodb:*:*:table/", !Ref PollyDB]]
       Environment:
         Variables:
           BUCKET_NAME: !Ref AudioBucket
