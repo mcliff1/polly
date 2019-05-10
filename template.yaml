@@ -21,7 +21,7 @@ Parameters:
 
 Globals:
   Function:
-    Runtime: python3.6
+    Runtime: python3.7
     Environment:
       Variables:
         DB_TABLE_NAME: !Ref PollyDB
@@ -39,12 +39,17 @@ Resources:
     Type:  AWS::Serverless::Function
     Properties:
       Handler: handler.apihandler
-      Runtime: python3.6
       CodeUri: api/
-      Policies: AmazonDynamoDBReadOnlyAccess
-      # Environment:
-      #   Variables:
-      #     TABLE_NAME: !Ref Table
+      Policies:
+        - AmazonDynamoDBReadOnlyAccess
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:PutItem
+                - dynamodb:Delete*
+                - dynamodb:Update*
+              Resource: !Join ["", ["arn:aws:dynamodb:*:*:table/", !Ref PollyDB]]
       Events:
         GetResource:
           Type: Api
@@ -64,14 +69,6 @@ Resources:
       CodeUri: api/
       Policies:
         - AmazonDynamoDBReadOnlyAccess
-        - Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - dynamodb:PutItem
-                - dynamodb:Delete*
-                - dynamodb:Update*
-              Resource: !Join ["", ["arn:aws:dynamodb:*:*:table/", !Ref PollyDB]]
       Environment:
         Variables:
           BUCKET_NAME: !Ref AudioBucket
