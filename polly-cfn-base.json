@@ -63,7 +63,8 @@
                 "sns:CreateTopic",
                 "sns:GetTopicAttributes",
                 "sns:DeleteTopic",
-                "sns:Subscribe"
+                "sns:Subscribe",
+                "sns:Unsubscribe"
               ],
               "Resource" : "*",
               "Effect" : "Allow"
