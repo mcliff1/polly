@@ -13,8 +13,8 @@ script:
   - BASE_CONFIG=$(aws ssm get-parameter --name /travisci/polly | jq -r '.Parameter.Value')
   - echo $BASE_CONFIG
   - S3_BUILD_BUCKET=$(echo $BASE_CONFIG | jq -r '.build_bucket')
-  - echo "Travis branch is $TRAVIS_BRANCH"
-  - CONFIG=$(aws ssm get-parameter --name /travisci/polly/${CI_COMMIT_REF_NAME} | jq -r '.Parameter.Value')
+  #- echo "Travis branch is $TRAVIS_BRANCH"
+  - CONFIG=$(aws ssm get-parameter --name /travisci/polly/${TRAVIS_BRANCH} | jq -r '.Parameter.Value')
   # - echo $CONFIG
   - STACK_NAME=$(echo $CONFIG | jq -r '.stack_name')
   - DOMAIN_NAME=$(echo $CONFIG | jq -r '.domain_name')
