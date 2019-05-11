@@ -21,11 +21,6 @@ script:
   - WEB_NAME=$(echo $CONFIG | jq -r '.web_name')
   - API_NAME=$(echo $CONFIG | jq -r '.api_name')
   - CERT_ARN=$(echo $CONFIG | jq -r '.cert_arn')
-  #- STACK_NAME=polly-develop3
-  #- DOMAIN_NAME=mattcliff.net
-  #- WEB_NAME=polly3
-  #- API_NAME=polly3-api
-  #- CERT_ARN="arn:aws:acm:us-east-1:220065781146:certificate/99c23c6e-a2cf-4e83-ba1e-846f373e0d79"
   - sam validate
   #- sam --region us-west-2 validate
   - sam package --template-file template.yaml --s3-bucket ${S3_BUILD_BUCKET} --output-template-file interim-template.yaml

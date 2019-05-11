@@ -183,6 +183,19 @@
           }
         ]
       }
+    },
+
+
+
+    "ssmTravisCiParameters": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": "/travisci/polly",
+        "Description": "Polly base Build configuration used across multiple stacks",
+        "Value": {"Fn::Join": ["", ["{\"build_bucket\" : \"", {"Ref": "BuildBucket"},
+                             "\"}"]]},
+        "Type": "String"
+      }
     }
 
   },
@@ -204,14 +217,10 @@
         {
           "Label" : { "default" : "Hostnames and DNS"},
           "Parameters" : [ "DomainName", "WebHostName", "ApiHostName"]
-        },
-        {
-          "Label" : { "default" : "SSL Certificates (pre-created)"},
-          "Parameters" : [ "ApiACMArn", "WebACMArn"]
         }
       ],
       "ParameterLabels" : {
-        "ApiHostName": { "default" : "Hostname (not include domain) for the API" },
+        "Project": { "default" : "Name of the project for tags" },
         "WebHostName": { "default" : "Hostname (not include domain) for the Web" }
       }
     }
