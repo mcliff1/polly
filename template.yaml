@@ -81,6 +81,10 @@ Resources:
               Action:
                 - polly:SynthesizeSpeech
               Resource: '*'
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+              Resource: !Join ['', ['arn:aws:s3:::', !Ref AudioBucket, '/*']]
       Environment:
         Variables:
           BUCKET_NAME: !Ref AudioBucket
