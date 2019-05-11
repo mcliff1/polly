@@ -75,6 +75,12 @@ Resources:
       CodeUri: api/
       Policies:
         - AmazonDynamoDBReadOnlyAccess
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - polly:SynthesizeSpeech
+              Resource: '*'
       Environment:
         Variables:
           BUCKET_NAME: !Ref AudioBucket

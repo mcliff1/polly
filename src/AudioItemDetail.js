@@ -4,7 +4,7 @@ import React from 'react';
 const AudioItemDetail = ({item, lastGenerated}) => {
   return(
     <div>
-    <table><tbody>
+    <table border="0"><tbody>
     <tr>
       <td>{lastGenerated}</td>
       <td>{item.id}</td>
@@ -14,7 +14,7 @@ const AudioItemDetail = ({item, lastGenerated}) => {
       <td>
         {
           typeof item['url'] === 'undefined' ?
-          <div></div>
+          <div>no url</div>
           :
           <audio controls preload="auto">
             <source src={item.url} type='audio/mpeg' />

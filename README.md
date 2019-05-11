@@ -27,6 +27,10 @@ To run in a AWS account, Travis CI can be used as follows:
 * [Production](https://polly.mattcliff.net/)
 * [Dev](https://polly-dev.mattcliff.net/)
 
+For local testing you can use
+`REACT_APP_API_ENDPOINT=localhost:4444 npm run start`
+assuming you are running sam local on port 3001 for the API.
+
 
 TODO: permissions in the CodeBuildPolicy should line up with naming conventions for stack resources
 
