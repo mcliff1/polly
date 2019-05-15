@@ -1,12 +1,10 @@
 import React from 'react';
-import AudioListViewDetail from './AudioListViewDetail';
+// import AudioListViewDetail from './AudioListViewDetail';
 
 
 const AudioListView = ({list}) => {
   return(
     <div>
-
-
 
   <table id="posts">
     <colgroup>
@@ -31,8 +29,24 @@ const AudioListView = ({list}) => {
         list ?
         list.map((item, idx) => {
           return(
-            <AudioListViewDetail item={item} key={idx} />
-          );
+          <tr index={idx}>
+            <td>{item.id}</td>
+            <td>{item.voice}</td>
+            <td>{item.text}</td>
+            <td>{item.status}</td>
+            <td>
+              {
+                typeof item['url'] === 'undefined' ?
+                <div></div>
+                :
+                <audio controls>
+                  <source src={item.url} type='audio/mpeg' />
+                </audio>
+              }
+            </td>
+            <td>del</td>
+          </tr>
+)
         })
         :
         <tr><td colSpan="5">No data</td></tr>

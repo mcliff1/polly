@@ -1,0 +1,39 @@
+language: python
+python:
+  - '2.7'
+branches:
+  only: develop
+install:
+  - pip install awscli
+  - pip install aws-sam-cli
+script:
+  - aws sts get-caller-identity
+  - export AWS_DEFAULT_REGION=us-west-2
+  #- export SAM_STACK_NAME=polly-api-pollydev
+  - BASE_CONFIG=$(aws ssm get-parameter --name /travisci/polly | jq -r '.Parameter.Value')
+  - echo $BASE_CONFIG
+  - S3_BUILD_BUCKET=$(echo $BASE_CONFIG | jq -r '.build_bucket')
+  #- echo "Travis branch is $TRAVIS_BRANCH"
+  - CONFIG=$(aws ssm get-parameter --name /travisci/polly/${TRAVIS_BRANCH} | jq -r '.Parameter.Value')
+  # - echo $CONFIG
+  - STACK_NAME=$(echo $CONFIG | jq -r '.stack_name')
+  - DOMAIN_NAME=$(echo $CONFIG | jq -r '.domain_name')
+  - WEB_NAME=$(echo $CONFIG | jq -r '.web_name')
+  - API_NAME=$(echo $CONFIG | jq -r '.api_name')
+  - CERT_ARN=$(echo $CONFIG | jq -r '.cert_arn')
+  - sam validate
+  #- sam --region us-west-2 validate
+  - sam package --template-file template.yaml --s3-bucket ${S3_BUILD_BUCKET} --output-template-file interim-template.yaml
+  #- sam deploy  --template-file interim-template.yaml --stack-name ${SAM_STACK_NAME} --capabilities CAPABILITY_IAM
+  - sam deploy --parameter-overrides DomainName=${DOMAIN_NAME} CertificateArn=${CERT_ARN} ApiName=${API_NAME} WebName=${WEB_NAME} --template-file interim-template.yaml --stack-name ${STACK_NAME} --capabilities CAPABILITY_IAM
+  - npm install
+  #- npm run build
+  - API_ENDPOINT=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query 'Stacks[0].Outputs[?OutputKey==`ApiURL`].OutputValue' --output text)
+  - REACT_APP_API_ENDPOINT=${API_ENDPOINT} npm run build
+  - WEB_BUCKET=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query 'Stacks[0].Outputs[?OutputKey==`WebBucket`].OutputValue' --output text)
+  #- echo "WEB_BUCKET is $WEB_BUCKET"
+  - aws s3 sync ./build s3://$WEB_BUCKET/ --delete --acl public-read
+
+notifications:
+  email:
+    on_failure: always

@@ -1,0 +1,293 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Polly Service
+
+
+Parameters:
+  DomainName:
+    Type: String
+    Description: DNS Domain Name (must have Hosted Zone in R53)
+
+  CertificateArn:
+    Type: String
+    Description: ARN for SSL certificate (us-east-1)
+
+  WebName:
+    Type: String
+    Description: Web Page Hostname
+  ApiName:
+    Type: String
+    Description: API Hostname
+
+Globals:
+  Function:
+    Runtime: python3.7
+    Environment:
+      Variables:
+        DB_TABLE_NAME: !Ref PollyDB
+        SNS_TOPIC: !Ref SNSTopic
+  Api:
+    # enable cors
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      # TODO make this be for WebName.DomainName or ApiName.DomainName
+      AllowOrigin: "'*'"
+
+Resources:
+
+  PollyApi:
+    Type:  AWS::Serverless::Function
+    Properties:
+      Handler: handler.apihandler
+      CodeUri: api/
+      Policies:
+        - AmazonDynamoDBReadOnlyAccess
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:PutItem
+                - dynamodb:Delete*
+                - dynamodb:Update*
+              Resource: !Join ["", ["arn:aws:dynamodb:*:*:table/", !Ref PollyDB]]
+              #Resource: !GetAtt PollyDB.Arn
+            - Effect: Allow
+              Action:
+                - sns:Publish
+              Resource: !Ref SNSTopic
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+        PostResource:
+          Type: Api
+          Properties:
+            Path: /
+            Method: post
+
+  ConvertAudio:
+    Type:  AWS::Serverless::Function
+    Properties:
+      Handler: convert_audio.lambda_handler
+      CodeUri: api/
+      Policies:
+        - AmazonDynamoDBReadOnlyAccess
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - polly:SynthesizeSpeech
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+              Resource: !Join ['', ['arn:aws:s3:::', !Ref AudioBucket, '/*']]
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref AudioBucket
+      Events:
+        GetResource:
+          Type: SNS
+          Properties:
+            Topic: !Ref SNSTopic
+
+
+  AudioBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      Tags:
+        - { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-AudioBucket"]]}}
+
+
+  WebBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods: [ "GET" ]
+            AllowedOrigins: [ {"Fn::Join" : [".", ["*", {"Ref": "DomainName"}]]} ]
+            AllowedHeaders: ["*"]
+            MaxAge: 3000
+            Id: corsRuleGet
+          - AllowedMethods: [ "PUT", "POST", "DELETE" ]
+            AllowedOrigins: [ {"Fn::Join" : [".", ["*", {"Ref": "DomainName"}]]} ]
+            AllowedHeaders: ["*"]
+            MaxAge: 3000
+            Id: corsRuleModify
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+      # Tags:
+      #   - Key: Name
+      #     Value: {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-WebBucket"]]}}
+
+  WebBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: { "Ref" : "WebBucket" }
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          Action: S3:GetObject
+          Resource: { "Fn::Join" : [ "", ["arn:aws:s3:::", { "Ref" : "WebBucket"}, "/*"]] }
+          Principal: "*"
+          Effect: Allow
+
+
+
+  SNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: {"Fn::Sub" : "General Announcments For ${AWS::StackName} network"}
+
+  SNSNewPostsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: {"Fn::Sub" : "New Posts (Lambda to Lambda connection) ${AWS::StackName}"}
+
+
+
+  WebCDN:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        ViewerCertificate:
+          AcmCertificateArn: { "Ref" : "CertificateArn" }
+          SslSupportMethod: sni-only
+        Enabled: true
+        HttpVersion: http2
+        Aliases: [ {"Fn::Join": [".", [ {"Ref": "WebName"}, {"Ref": "DomainName"}]]} ]
+        DefaultRootObject: "index.html"
+        Origins:
+          - DomainName: { "Fn::Join" : [ "." ,  [ { "Ref" : "WebBucket"}, {"Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region"}, "websiteendpoint"] }]]}
+            Id: S3Origin
+            CustomOriginConfig:
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginProtocolPolicy: "http-only"
+        DefaultCacheBehavior:
+          ViewerProtocolPolicy: "redirect-to-https"
+          TargetOriginId: "S3Origin"
+          AllowedMethods: [ GET, HEAD ]
+          Compress: "true"
+          DefaultTTL: 30
+          MinTTL: 0
+          MaxTTL: 60
+          ForwardedValues:
+            QueryString: true
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Origin
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: "/index.html"
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: "/index.html"
+
+
+  WebDNS:
+    Type: "AWS::Route53::RecordSet"
+    Properties:
+      Comment: "SSL URL for Project"
+      Type: "A"
+      HostedZoneName : { "Fn::Join" : [ "", [ {"Ref" : "DomainName"}, "."]]}
+      Name: {"Fn::Join": ["", [ {"Ref" :"WebName"}, ".", {"Ref" : "DomainName"}, "."]]}
+      AliasTarget:
+        HostedZoneId: "Z2FDTNDATAQYW2"
+        DNSName: { "Fn::GetAtt" : [ "WebCDN" , "DomainName"]}
+
+  PollyDB:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        - AttributeName : "id"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "id"
+          KeyType: "HASH"
+      Tags:
+        - { "Key" : "Name", "Value" : {"Fn::Join": ["", [{"Ref": "AWS::StackName"}, "-PollyDynamoDB"]]}}
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+
+  ApiDomain:
+    Type : AWS::ApiGateway::DomainName
+    Properties:
+      #DomainName: {"Fn::Join": [".", [{"Ref": "ApiName"}, {"Ref" : "DomainName"}]]}
+      DomainName: !Join [".", [{"Ref": "ApiName"}, {"Ref" : "DomainName"}]]
+      CertificateArn: !Ref CertificateArn
+      # RegionalCertificateArn: !Ref CertificateArn
+      # EndpointConfiguration:
+      #   Types:
+      #     - REGIONAL
+
+
+  ApiMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      DomainName: {"Ref": "ApiDomain"}
+      RestApiId: {"Ref": "ServerlessRestApi"}
+
+
+  ApiDnsRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Comment: "URL for Polly API Service generated by SAM template"
+      Type: A
+      HostedZoneName: {"Fn::Join" : ["", [{"Ref" : "DomainName"}, "."]]}
+      Name: {"Fn::Join": ["", [
+        {"Ref": "ApiName"}, ".", {"Ref" : "DomainName"}, "."]
+      ]}
+      AliasTarget:
+        HostedZoneId: Z2FDTNDATAQYW2
+        DNSName: {"Fn::GetAtt": ["ApiDomain", "DistributionDomainName"]}
+        #HostedZoneId: Z2OJLYMUO9EFXC
+        #DNSName: {"Fn::GetAtt": ["TMSApiDomain", "RegionalDomainName"]}
+
+
+
+
+
+
+Outputs:
+  ApiURL:
+    Description: "API endpoint"
+    #Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/resource/"
+    Value: {"Fn::Join": ["", [ {"Ref" :"ApiName"}, ".", {"Ref" : "DomainName"}]]}
+  WebBucket:
+    Description: "Web Bucket"
+    Value: !Ref WebBucket
+  WebSite:
+    Description: URL to access application
+    Value: {"Fn::Join": ["", [ {"Ref" :"WebName"}, ".", {"Ref" : "DomainName"}]]}
+  # ReactConfig:
+  #   Description: JSON configuration to insert in REACT
+  #   Value: !Join ["", [ "{\"userPool\":\"", {"Ref": "UserPool"},
+  #        "\", \"clientId\":\"", {"Ref": "UserPoolClient"},
+  #        "\", \"region\":\"", {"Ref": "AWS::Region"},
+  #        "\", \"apiCarrier\":\"", {"Fn::Sub": "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/resource/"},
+  #        "\"}" ]]
+
+
+Mappings:
+  RegionMap:
+    us-east-1:
+      S3hostedzoneID: Z3AQBSTGFYJSTF
+      websiteendpoint: s3-website-us-east-1.amazonaws.com
+    us-east-2:
+      S3hostedzoneID: Z2O1EMRO9K5GLX
+      websiteendpoint: s3-website-us-east-2.amazonaws.com
+    us-west-1:
+      S3hostedzoneID: Z2F56UZL2M1ACD
+      websiteendpoint: s3-website-us-west-1.amazonaws.com
+    us-west-2:
+      S3hostedzoneID: Z3BJ6K6RIION7M
+      websiteendpoint: s3-website-us-west-2.amazonaws.com

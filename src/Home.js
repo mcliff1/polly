@@ -17,7 +17,7 @@ class Home extends Component {
         <TextToAudio />
         <p>To work the filter, use &quot;*&quot; to show all</p>
         <AudioItem />
-        <p>Last Published 10/23/2018</p>
+        <p>Last Published 5/10/2019</p>
       </div>
     );
   }
