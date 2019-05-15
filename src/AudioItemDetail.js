@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Button } from 'reactstrap';
 
 const AudioItemDetail = ({item, lastGenerated}) => {
   return(
@@ -21,7 +21,7 @@ const AudioItemDetail = ({item, lastGenerated}) => {
           </audio>
         }
       </td>
-      <td>del</td>
+      <td><Button>del</Button>{'  '}</td>
     </tr></tbody></table>
     </div>
   );
