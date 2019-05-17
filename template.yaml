@@ -32,6 +32,7 @@ Globals:
       AllowMethods: "'*'"
       AllowHeaders: "'*'"
       # TODO make this be for WebName.DomainName or ApiName.DomainName
+      #AllowOrigin: !Join ['', ['https://', !Ref WebName, '.', !Ref DomainName]]
       AllowOrigin: "'*'"
 
 Resources:
