@@ -75,7 +75,7 @@ Resources:
       Handler: convert_audio.lambda_handler
       CodeUri: api/
       Policies:
-        - AmazonDynamoDBReadOnlyAccess
+        - AmazonDynamoDBReadOnlyAccess  #TODO tighten this up
         - Version: '2012-10-17'
           Statement:
             - Effect: Allow
@@ -90,6 +90,11 @@ Resources:
               Resource:
                 - !Join ['', ['arn:aws:s3:::', !Ref AudioBucket]]
                 - !Join ['', ['arn:aws:s3:::', !Ref AudioBucket, '/*']]
+            - Effect: Allow
+              Action:
+                - dynamodb:UpdateItem
+              Resource:
+                - !Join ['', ['arn:aws:dynamodb:', !Ref 'AWS::Region',':', !Ref 'AWS::AccountId',':table/', !Ref PollyDB]]
       Environment:
         Variables:
           BUCKET_NAME: !Ref AudioBucket
