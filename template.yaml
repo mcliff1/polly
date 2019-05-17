@@ -86,7 +86,10 @@ Resources:
               Action:
                 - s3:PutObject
                 - s3:PutObjectAcl
-              Resource: !Join ['', ['arn:aws:s3:::', !Ref AudioBucket, '/*']]
+                - s3:GetBucketLocation
+              Resource:
+                - !Join ['', ['arn:aws:s3:::', !Ref AudioBucket]]
+                - !Join ['', ['arn:aws:s3:::', !Ref AudioBucket, '/*']]
       Environment:
         Variables:
           BUCKET_NAME: !Ref AudioBucket
