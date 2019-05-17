@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import AudioList from './AudioList';
+import config from './config.js';
 
 class History extends Component {
 
@@ -9,7 +10,7 @@ class History extends Component {
       <div>
         <p>To work the filter, use &quot;*&quot; to show all</p>
         <AudioList />
-        <p>Last Published 10/23/2018</p>
+        <p>Last Published: {config.publish_date}</p>
       </div>
     );
   }

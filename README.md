@@ -42,6 +42,24 @@ the *handler.py* code stores the request in dynamo with and generates unique req
 
 The *src/actions/index.js* file has the configuration for the API endpoint url.
 
+#### 5/16/2019
+
+config options;
+1. create a file `.env.staging`
+1. include in it stuff like `REACT_APP_API_ENDPOINT=polly-dev.mattcliff.net`
+1. install [env-cmd](https://www.npmjs.com/package/env-cmd)
+  1. npm install env-cmd --save
+1. add new script to `package.json` as follows
+```
+{
+  "scripts": {
+     "build:staging": "env-cmd .env.staging npm run build"
+  }
+}
+```
+run `npm run build:staging`
+
+
 #### 11/3/2018
 
 split the List to a new page
