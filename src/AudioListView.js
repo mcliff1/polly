@@ -29,7 +29,7 @@ const AudioListView = ({list}) => {
         list ?
         list.map((item, idx) => {
           return(
-          <tr index={idx}>
+          <tr key={idx}>
             <td>{item.id}</td>
             <td>{item.voice}</td>
             <td>{item.text}</td>
