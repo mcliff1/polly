@@ -1,5 +1,6 @@
 import React from 'react';
 // import AudioListViewDetail from './AudioListViewDetail';
+import { Button } from 'reactstrap';
 
 
 const AudioListView = ({list}) => {
@@ -44,7 +45,7 @@ const AudioListView = ({list}) => {
                 </audio>
               }
             </td>
-            <td>del</td>
+            <td><Button>del</Button>{'  '}</td>
           </tr>
 )
         })
