@@ -30,7 +30,9 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "dotenv": "^6.2.0"
+    "dotenv": "^6.2.0",
+    "handlebars": "^4.1.2",
+    "js-yaml": ">=3.13.1"
   },
   "browserslist": [
     ">0.2%",
