@@ -14,7 +14,7 @@
     "react-media": "^1.9.2",
     "react-redux": "^5.1.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^3.1.1",
+    "react-scripts": "^3.4.0",
     "react-thunk": "^1.0.0",
     "reactstrap": "^6.5.0",
     "redux": "^4.0.4",
@@ -39,5 +39,17 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "description": "Sample project to show case serverless technology and speech translations.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://mcliff1@github.com/mcliff1/polly.git"
+  },
+  "author": "Matt Cliff",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mcliff1/polly/issues"
+  },
+  "homepage": "https://github.com/mcliff1/polly#readme"
 }
