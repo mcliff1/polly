@@ -121,6 +121,15 @@
               "Action": [
                 "sts:AssumeRole"
               ]
+            },
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {"Fn::Join": ["", ["arn:aws:iam::", {"Ref": "AWS::AccountId"}, ":user/security-travisciuserB2F4191E-1KSX85L5ZFC5M"]]},
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
             }
           ]
         }
