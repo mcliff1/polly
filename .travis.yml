@@ -13,7 +13,7 @@ install:
 .setup_role_script: &setup_role
   - echo "============== SETUP ASSUME ROLE =============="
   - aws sts get-caller-identity
-  - ROLE_ARN="arn:aws:iam::220065781146:role/security-gitlabdeployroleF3E0B6EA-13ION3CFTS408"
+  - ROLE_ARN="arn:aws:iam::220065781146:role/polly-base-CodeBuildRole-LGM4LSF09YRW"
   #- KST=($(aws sts assume-role --role-arn $ROLE_ARN --role-session-name "gitlab-ci-${CI_COMMIT_SHA}" --query '[Credentials.AccessKeyId, Credentials.SecretAccessKey, Credentials.SessionToken]' --output text))
   - KST=$(aws sts assume-role --role-arn $ROLE_ARN --role-session-name "gitlab-ci-${CI_COMMIT_SHA}" )
   - echo $KST
@@ -21,7 +21,7 @@ install:
   - export AWS_SECRET_ACCESS_KEY=$(echo $KST| jq -r '.Credentials.SecretAccessKey')
   - export AWS_SESSION_TOKEN=$(echo $KST| jq -r '.Credentials.SessionToken')
   - export AWS_SECURITY_TOKEN=${AWS_SESSION_TOKEN}
-  - aws sts get-caller-identity  
+  - aws sts get-caller-identity
 
 script:
   #- aws sts get-caller-identity

@@ -27,9 +27,6 @@
     "CodeBuildPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "Groups": [
-          {"Ref": "CodeBuildGroup"}
-        ],
         "Roles": [
           {"Ref": "CodeBuildRole"}
         ],
@@ -107,11 +104,6 @@
 
           ]
         }
-      }
-    },
-    "CodeBuildGroup": {
-      "Type": "AWS::IAM::Group",
-      "Properties": {
       }
     },
     "CodeBuildRole" : {
