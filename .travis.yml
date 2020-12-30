@@ -8,8 +8,15 @@ branches:
 install:
   - pip install awscli
   - pip install aws-sam-cli
-script:
+
+
+.setup_role_script: &setup_role
+  - echo "============== SETUP ASSUME ROLE =============="
   - aws sts get-caller-identity
+
+script:
+  #- aws sts get-caller-identity
+  - *setup_role
   - export AWS_DEFAULT_REGION=us-west-2
   #- export SAM_STACK_NAME=polly-api-pollydev
   - BASE_CONFIG=$(aws ssm get-parameter --name /travisci/polly | jq -r '.Parameter.Value')
@@ -27,7 +34,7 @@ script:
   #- sam --region us-west-2 validate
   - sam package --template-file template.yaml --s3-bucket ${S3_BUILD_BUCKET} --output-template-file interim-template.yaml
   #- sam deploy  --template-file interim-template.yaml --stack-name ${SAM_STACK_NAME} --capabilities CAPABILITY_IAM
-  - sam deploy --parameter-overrides DomainName=${DOMAIN_NAME} CertificateArn=${CERT_ARN} ApiName=${API_NAME} WebName=${WEB_NAME} --template-file interim-template.yaml --stack-name ${STACK_NAME} --capabilities CAPABILITY_IAM || echo "sam deploy failed" 
+  - sam deploy --parameter-overrides DomainName=${DOMAIN_NAME} CertificateArn=${CERT_ARN} ApiName=${API_NAME} WebName=${WEB_NAME} --template-file interim-template.yaml --stack-name ${STACK_NAME} --capabilities CAPABILITY_IAM || echo "sam deploy failed"
   - npm install
   #- npm run build
   - API_ENDPOINT=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query 'Stacks[0].Outputs[?OutputKey==`ApiURL`].OutputValue' --output text)
