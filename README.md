@@ -43,7 +43,7 @@ the *handler.py* code stores the request in dynamo with and generates unique req
 The *src/actions/index.js* file has the configuration for the API endpoint url.
 
 #### 6/1/2019
-Comment on design objecgive:
+Comment on design objective:
 have everythin in Git, then a new fork or branch is made without addition to version control,
 be able to "plug-in" a CI such as Travis for builds.
 

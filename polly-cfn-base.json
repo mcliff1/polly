@@ -1,11 +1,16 @@
 {
   "AWSTemplateFormatVersion" : "2010-09-09",
   "Description": "Creates framework necessary for SLS services, including ACM certs, S3 buckets and cognito identity pool",
-  "Parameters" : {
-    "Project" : {
-      "Description" : "Enter Project Name",
-      "Type" : "String",
-      "Default" : "Polly Serverless Base"
+  "Parameters": {
+    "Project": {
+      "Description": "Enter Project Name",
+      "Type": "String",
+      "Default": "Polly Serverless Base"
+    },
+    "TemplateVersion": {
+      "Description": "Template Version",
+      "Type": "String",
+      "Default": "1.0.1"
     }
 
   },
@@ -22,9 +27,6 @@
     "CodeBuildPolicy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "Groups": [
-          {"Ref": "CodeBuildGroup"}
-        ],
         "Roles": [
           {"Ref": "CodeBuildRole"}
         ],
@@ -104,11 +106,6 @@
         }
       }
     },
-    "CodeBuildGroup": {
-      "Type": "AWS::IAM::Group",
-      "Properties": {
-      }
-    },
     "CodeBuildRole" : {
       "Type" : "AWS::IAM::Role",
       "Properties" : {
@@ -120,6 +117,15 @@
                 "Service" : [
                   "codebuild.amazonaws.com"
                 ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {"Fn::Join": ["", ["arn:aws:iam::", {"Ref": "AWS::AccountId"}, ":user/security-travisciuserB2F4191E-1KSX85L5ZFC5M"]]},
               },
               "Action": [
                 "sts:AssumeRole"
@@ -201,9 +207,13 @@
 
   },
   "Outputs": {
-    "Project" : {
-      "Description" : "The Project Name",
-      "Value" : {"Ref": "Project"}
+    "Project": {
+      "Description": "The Project Name",
+      "Value": {"Ref": "Project"}
+    },
+    "TemplateVersion": {
+      "Description": "Template Version",
+      "Value": {"Ref": "TemplateVersion"}
     }
 
   },
@@ -213,7 +223,7 @@
       "ParameterGroups" : [
         {
           "Label" : { "default" : "Project Information"},
-          "Parameters" : [ "Project" ]
+          "Parameters" : [ "Project", "TemplateVersion" ]
         },
         {
           "Label" : { "default" : "Hostnames and DNS"},

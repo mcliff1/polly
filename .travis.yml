@@ -8,8 +8,24 @@ branches:
 install:
   - pip install awscli
   - pip install aws-sam-cli
-script:
+
+
+.setup_role_script: &setup_role
+  - echo "============== SETUP ASSUME ROLE =============="
   - aws sts get-caller-identity
+  - ROLE_ARN="arn:aws:iam::220065781146:role/polly-base-CodeBuildRole-LGM4LSF09YRW"
+  #- KST=($(aws sts assume-role --role-arn $ROLE_ARN --role-session-name "gitlab-ci-${CI_COMMIT_SHA}" --query '[Credentials.AccessKeyId, Credentials.SecretAccessKey, Credentials.SessionToken]' --output text))
+  - KST=$(aws sts assume-role --role-arn $ROLE_ARN --role-session-name "gitlab-ci-${CI_COMMIT_SHA}" )
+  - echo $KST
+  - export AWS_ACCESS_KEY_ID=$(echo $KST| jq -r '.Credentials.AccessKeyId')
+  - export AWS_SECRET_ACCESS_KEY=$(echo $KST| jq -r '.Credentials.SecretAccessKey')
+  - export AWS_SESSION_TOKEN=$(echo $KST| jq -r '.Credentials.SessionToken')
+  - export AWS_SECURITY_TOKEN=${AWS_SESSION_TOKEN}
+  - aws sts get-caller-identity
+
+script:
+  #- aws sts get-caller-identity
+  - *setup_role
   - export AWS_DEFAULT_REGION=us-west-2
   #- export SAM_STACK_NAME=polly-api-pollydev
   - BASE_CONFIG=$(aws ssm get-parameter --name /travisci/polly | jq -r '.Parameter.Value')
@@ -27,7 +43,7 @@ script:
   #- sam --region us-west-2 validate
   - sam package --template-file template.yaml --s3-bucket ${S3_BUILD_BUCKET} --output-template-file interim-template.yaml
   #- sam deploy  --template-file interim-template.yaml --stack-name ${SAM_STACK_NAME} --capabilities CAPABILITY_IAM
-  - sam deploy --parameter-overrides DomainName=${DOMAIN_NAME} CertificateArn=${CERT_ARN} ApiName=${API_NAME} WebName=${WEB_NAME} --template-file interim-template.yaml --stack-name ${STACK_NAME} --capabilities CAPABILITY_IAM || echo "sam deploy failed" 
+  - sam deploy --parameter-overrides DomainName=${DOMAIN_NAME} CertificateArn=${CERT_ARN} ApiName=${API_NAME} WebName=${WEB_NAME} --template-file interim-template.yaml --stack-name ${STACK_NAME} --capabilities CAPABILITY_IAM || echo "sam deploy failed"
   - npm install
   #- npm run build
   - API_ENDPOINT=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query 'Stacks[0].Outputs[?OutputKey==`ApiURL`].OutputValue' --output text)
