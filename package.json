@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "dotenv": "^6.2.0",
-    "handlebars": "^4.7.6",
+    "handlebars": "^4.7.7",
     "js-yaml": ">=3.13.1"
   },
   "browserslist": [
