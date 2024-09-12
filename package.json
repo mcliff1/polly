@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "ajv": "^6.12.6",
-    "bootstrap": "^4.6.2",
+    "bootstrap": "^5.0.0",
     "env-cmd": "^8.0.2",
     "jquery": "^3.5.1",
     "react": "^16.13.1",
