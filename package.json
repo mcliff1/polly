@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "dependencies": {
-    "ajv": "^6.12.6",
+    "ajv": "^6.15.0",
     "bootstrap": "^5.0.0",
     "env-cmd": "^8.0.2",
     "jquery": "^3.5.1",
