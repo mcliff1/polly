@@ -2,7 +2,7 @@
 
 Sample project to show case serverless technology and speech translations.
 
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
+The React frontend uses Vite.
 
 there is also a REACT UI that gets deployed to S3 to present the tool
 
@@ -30,6 +30,18 @@ To run in a AWS account, Travis CI can be used as follows:
 For local testing you can use
 `REACT_APP_API_ENDPOINT=localhost:4444 npm run start`
 assuming you are running sam local on port 3001 for the API.
+
+### Run the frontend in a VS Code Dev Container
+
+Install Docker Desktop and the VS Code Dev Containers extension, then open this repository and select **Dev Containers: Reopen in Container**. The container provides Node.js and npm and installs dependencies when it is created.
+
+In the container terminal, start the frontend with:
+
+```
+npm run dev -- --host 0.0.0.0
+```
+
+VS Code forwards port 5173. Run `npm test` and `npm run build` in the container to test and build the frontend.
 
 
 TODO: permissions in the CodeBuildPolicy should line up with naming conventions for stack resources
